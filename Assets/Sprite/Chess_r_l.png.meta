@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: cc03006dc0d4b4a4883afbe52abae6f9
+guid: 495c7143ff9029f4eaddb34d96865e5a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4408457387769135901
-    second: Chess_plt45_0
+      213: -5101617381272670095
+    second: Chess_rlt45_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Chess_plt45_0
+      name: Chess_rlt45_0
       rect:
         serializedVersion: 2
-        x: 31
-        y: 13
-        width: 79
-        height: 104
+        x: 24
+        y: 14
+        width: 93
+        height: 102
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3ecf292ec5302d2c0800000000000000
-      internalID: -4408457387769135901
+      spriteID: 170b841750a6339b0800000000000000
+      internalID: -5101617381272670095
       vertices: []
       indices: 
       edges: []
@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Chess_rlt45_0: -5101617381272670095
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

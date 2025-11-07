@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 134f8fb164d25664998848044620a01c
+guid: 374441160bf56f04fa8d22494383c86d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5141570084554315600
-    second: Chess_klt45_0
+      213: -7023925084750312094
+    second: Chess_kdt45_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Chess_klt45_0
+      name: Chess_kdt45_0
       rect:
         serializedVersion: 2
         x: 15
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0b86d52df3975a8b0800000000000000
-      internalID: -5141570084554315600
+      spriteID: 26d808a8951068e90800000000000000
+      internalID: -7023925084750312094
       vertices: []
       indices: 
       edges: []
@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Chess_kdt45_0: -7023925084750312094
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
