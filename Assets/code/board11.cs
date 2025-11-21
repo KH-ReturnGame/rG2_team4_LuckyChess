@@ -1,23 +1,27 @@
-using JetBrains.Annotations;
+ï»¿using JetBrains.Annotations;
 using Mono.Cecil;
+using System.Net.Http.Headers;
 using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.Rendering.Universal.Internal;
 using static UnityEngine.Rendering.DebugUI.Table;
 using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 
 public class board11 : MonoBehaviour
 {
-    public int row = 0;  //°¡·Î
-    public int col = 0;  //¼¼·Î
-    public int piece1 = 0; //¼ø¼­´ë·Î Æù(1),ºñ¼ó(2),³ªÀÌÆ®(3),·è(4),Äı(5),Å·(6)
-    static int handle = 0; //ÀüÃ¼ Ä­¿¡¼­ ¼±ÅÃ À¯¹«
-    public int judge = 0; //Ä­ÀÇ »ö ¼³Á¤
-    public int canmove = 0; // ¿òÁ÷ÀÏ ¼ö ÀÖ´Â Ä­ Æù(1), ºñ¼ó(2), ³ªÀÌÆ® (3), ·è(4), Äı(5), Å·(6)
-    public int color = 0; // ¹é(1), Èæ(2)
-    public int realhandle = 0; //ÇöÀçÄ­ Å¬¸¯ À¯¹«
+    public int row = 0;  //ê°€ë¡œ
+    public int col = 0;  //ì„¸ë¡œ
+    public int piece1 = 0; //ìˆœì„œëŒ€ë¡œ í°(1),ë¹„ìˆ(2),ë‚˜ì´íŠ¸(3),ë£©(4),í€¸(5),í‚¹(6)
+    static int handle = 0; //ì „ì²´ ì¹¸ì—ì„œ ì„ íƒ ìœ ë¬´
+    public int judge = 0; //ì¹¸ì˜ ìƒ‰ ì„¤ì •
+    public int canmove = 0; // ì›€ì§ì¼ ìˆ˜ ìˆëŠ” ì¹¸ í°(1), ë¹„ìˆ(2), ë‚˜ì´íŠ¸ (3), ë£©(4), í€¸(5), í‚¹(6)
+    public int color = 0; // ë°±(1), í‘(2)
+    public int realhandle = 0; //í˜„ì¬ì¹¸ í´ë¦­ ìœ ë¬´
     static int nowmoverow = 0;
-    static int nowmovecol = 0; //ÇöÀç ¿òÁ÷ÀÌ´Â ÆùÀÇ ¿­
+    static int nowmovecol = 0; //í˜„ì¬ ì›€ì§ì´ëŠ” í°ì˜ ì—´
+    public int ima = 0;
+    public GameObject pieceImage;
     void ResetAllCanMove()
     {
         board11[] allBoards = GameObject.FindObjectsByType<board11>(FindObjectsSortMode.None);
@@ -26,12 +30,31 @@ public class board11 : MonoBehaviour
         {
             cell.canmove = 0;
 
-            Renderer rend = cell.GetComponent<Renderer>(); // cell ±âÁØ
-            if (cell.judge % 2 == 0)                       // cellÀÇ judge »ç¿ë
+            Renderer rend = cell.GetComponent<Renderer>(); // cell ê¸°ì¤€
+            if (cell.judge % 2 == 0)                       // cellì˜ judge ì‚¬ìš©
                 rend.material.color = Color.black;
             else
                 rend.material.color = Color.white;
         }
+        GameObject[] objs = GameObject.FindGameObjectsWithTag("WPACOPY");
+
+        foreach (GameObject obj in objs)
+        {
+            Destroy(obj);
+        }
+        wq("111");
+        wq("121");
+        wq("211");
+        wq("221");
+        wq("311");
+        wq("321");
+        wq("411");
+        wq("421");
+        wq("511");
+        wq("521");
+        wq("611");
+        wq("621");
+
     }
 
     void whose()
@@ -50,12 +73,51 @@ public class board11 : MonoBehaviour
         Renderer rend = GetComponent<Renderer>();
         rend.material.color = Color.blue;
     }
+    void wq(string naame)
+    {
+
+        // ğŸ”¥ 2) ë³µì‚¬ ì›ë³¸ ì°¾ê¸°
+        GameObject original = GameObject.Find(naame);
+        if (original == null)
+        {
+            Debug.LogError("wpa_0 ì˜¤ë¸Œì íŠ¸ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤!");
+            return;
+        }
+
+        // ğŸ”¥ 3) ëª¨ë“  ì…€(board11) ê²€ìƒ‰
+        board11[] allCells = GameObject.FindObjectsByType<board11>(FindObjectsSortMode.None);
+
+        foreach (board11 cell in allCells)
+        {
+            // ğŸ”¥ 4) ì¡°ê±´ ë§ìœ¼ë©´ ìƒˆ ë³µì‚¬ë³¸ ìƒì„±
+            int pstring = naame[0] - '0';
+            int cstring = naame[1] - '0';
+            if (cell.piece1 == pstring && cell.color == cstring)
+            {
+                GameObject copy = Instantiate(original);
+
+                // ìœ„ì¹˜ ì´ë™
+                Vector3 pos = cell.transform.position;
+                pos.y += 0;
+                copy.transform.position = pos;
+
+                // ë Œë”ë§ ìˆœì„œ
+                SpriteRenderer sr = copy.GetComponent<SpriteRenderer>();
+                if (sr != null) sr.sortingOrder = 50;
+
+                // ì´ë¦„ + íƒœê·¸ ì„¤ì •
+                copy.name = naame+"copy";
+                copy.tag = "WPACOPY";   // â­ ì¤‘ìš”: ì‚­ì œë¥¼ ìœ„í•´ íƒœê·¸ ë¶™ì„
+            }
+        }
+    }
 
 
 
 
 
-    private void Start()                                        //±âº» ¼¼ÆÃ
+
+    private void Start()                                        //ê¸°ë³¸ ì„¸íŒ…
     {
         string objName = gameObject.name;
         row = int.Parse(objName[0].ToString());
@@ -69,12 +131,12 @@ public class board11 : MonoBehaviour
         if (judge % 2 == 0)
         {
             Renderer rend = GetComponent<Renderer>();
-            rend.material.color = Color.black; // ¿ÀºêÁ§Æ® »ö»óÀ» °ËÀº»öÀ¸·Î º¯°æ
+            rend.material.color = Color.black; // ì˜¤ë¸Œì íŠ¸ ìƒ‰ìƒì„ ê²€ì€ìƒ‰ìœ¼ë¡œ ë³€ê²½
         }
         else
         {
             Renderer rend = GetComponent<Renderer>();
-            rend.material.color = Color.white; //¿ÀºêÁ§Æ® »ö»óÀ» °ËÀº»öÀ¸·Î º¯°æ
+            rend.material.color = Color.white; //ì˜¤ë¸Œì íŠ¸ ìƒ‰ìƒì„ ê²€ì€ìƒ‰ìœ¼ë¡œ ë³€ê²½
         }
         if (row == 7)
         {
@@ -83,94 +145,97 @@ public class board11 : MonoBehaviour
         }
         if (row == 1 && col == 2)
         {
-            piece1 = 3; //³ªÀÌÆ®
+            piece1 = 3; //ë‚˜ì´íŠ¸
             color = 1;
         }
         if (row == 1 && col == 7)
         {
-            piece1 = 3; //³ªÀÌÆ®
+            piece1 = 3; //ë‚˜ì´íŠ¸
             color = 1;
         }
         if (row == 8 && col == 2)
         {
-            piece1 = 3; //³ªÀÌÆ®
+            piece1 = 3; //ë‚˜ì´íŠ¸
             color = 2;
         }
         if (row == 8 && col == 7)
         {
-            piece1 = 3; //³ªÀÌÆ®
+            piece1 = 3; //ë‚˜ì´íŠ¸
             color = 2;
         }
         if (row == 1 && col == 5)
         {
-            piece1 = 5; //Äı
+            piece1 = 5; //í€¸
             color = 1;
         }
         if (row == 8 && col == 5)
         {
-            piece1 = 5; //Äı
+            piece1 = 5; //í€¸
             color = 2;
         }
-        if (row == 1 && col ==4)
+        if (row == 1 && col == 4)
         {
-            piece1 = 6; //Å·
+            piece1 = 6; //í‚¹
             color = 1;
         }
-        if(row == 8&& col == 4)
+        if (row == 8 && col == 4)
         {
-            piece1 = 6;  //Å·
+            piece1 = 6;  //í‚¹
             color = 2;
         }
-        if(row ==1 && col== 1 || row==1 && col ==8)
+        if (row == 1 && col == 1 || row == 1 && col == 8)
         {
-            piece1 = 4;  //·è
+            piece1 = 4;  //ë£©
             color = 1;
         }
-        if(row == 8 && col == 1|| row==8 && col==8)
+        if (row == 8 && col == 1 || row == 8 && col == 8)
         {
-            piece1 = 4; // ·è
+            piece1 = 4; // ë£©
             color = 2;
         }
-        if(row == 1 && col == 3 || row == 1 && col == 6)
+        if (row == 1 && col == 3 || row == 1 && col == 6)
         {
-            piece1 = 2; //ºñ¼ó
+            piece1 = 2; //ë¹„ìˆ
             color = 1;
         }
         if (row == 8 && col == 3 || row == 8 && col == 6)
         {
-            piece1 = 2; //ºñ¼ó
+            piece1 = 2; //ë¹„ìˆ
             color = 2;
         }
+        ResetAllCanMove();
 
     }
 
     void Update()
     {
-        // P Å°¸¦ ´­·¶À» ¶§ ÇÑ ¹ø¸¸ °¨Áö
+        // P í‚¤ë¥¼ ëˆŒë €ì„ ë•Œ í•œ ë²ˆë§Œ ê°ì§€
         if (Input.GetKeyDown(KeyCode.P))
         {
-            Debug.Log("P Å° ´­¸²!");
-            // ¿©±â¼­ ¿øÇÏ´Â ÇÔ¼ö È£Ãâ °¡´É
+            Debug.Log("P í‚¤ ëˆŒë¦¼!");
+            // ì—¬ê¸°ì„œ ì›í•˜ëŠ” í•¨ìˆ˜ í˜¸ì¶œ ê°€ëŠ¥
             whose();
             ResetAllCanMove();
         }
+        //ì—¬ê¸°ì„¸ ê¸°ë¬¼ ë“±ì¥ ë§Œë“¤ì˜ˆì •
     }
+                                  
 
 
 
-    private void OnMouseDown()                                  //Æù ¿òÁ÷ÀÓ ±¸Çö
+    private void OnMouseDown()                                  //í° ì›€ì§ì„ êµ¬í˜„
     {
         if (color == 1 && handle == 0)
         {
             if (handle == 0)
             {
-                handle += 1; // Å¬¸¯ÇÏ¸é handle Áõ°¡
+                handle += 1; // í´ë¦­í•˜ë©´ handle ì¦ê°€
                 realhandle = 1;
                 nowmovecol = col;
                 nowmoverow = row;
                 clickboard();
 
-                if (piece1 == 1) // PawnÀÌ¶ó¸é
+                if (piece1 == 1) // Pawnì´ë¼ë©´
                 {
                     nowmovecol = col;
                     nowmoverow = row;
@@ -183,7 +248,7 @@ public class board11 : MonoBehaviour
                     {
                         board11 targetBoard = target.GetComponent<board11>();
 
-                        if (targetBoard.piece1 == 0) // target Ä­¿¡ ±â¹°ÀÌ ¾øÀ¸¸é
+                        if (targetBoard.piece1 == 0) // target ì¹¸ì— ê¸°ë¬¼ì´ ì—†ìœ¼ë©´
                         {
                             Renderer rend = target.GetComponent<Renderer>();
                             rend.material = new Material(rend.material);
@@ -204,7 +269,7 @@ public class board11 : MonoBehaviour
                     if (target2 != null)
                     {
                         board11 targetBoard2 = target2.GetComponent<board11>();
-                        if (targetBoard2.piece1 != 0 && targetBoard2.color == 2) // target Ä­¿¡ »ó´ë ±â¹°ÀÌ ÀÖÀ¸¸é
+                        if (targetBoard2.piece1 != 0 && targetBoard2.color == 2) // target ì¹¸ì— ìƒëŒ€ ê¸°ë¬¼ì´ ìˆìœ¼ë©´
                         {
                             Renderer rend = target2.GetComponent<Renderer>();
                             rend.material = new Material(rend.material);
@@ -223,7 +288,7 @@ public class board11 : MonoBehaviour
                     if (target3 != null)
                     {
                         board11 targetBoard3 = target3.GetComponent<board11>();
-                        if (targetBoard3.piece1 != 0 && targetBoard3.color == 2) // target Ä­¿¡ »ó´ë ±â¹°ÀÌ ÀÖÀ¸¸é
+                        if (targetBoard3.piece1 != 0 && targetBoard3.color == 2) // target ì¹¸ì— ìƒëŒ€ ê¸°ë¬¼ì´ ìˆìœ¼ë©´
                         {
                             Renderer rend = target3.GetComponent<Renderer>();
                             rend.material = new Material(rend.material);
@@ -235,7 +300,7 @@ public class board11 : MonoBehaviour
                         }
                     }
                 }
-                else if (piece1 == 3) //³ªÀÌÆ®¶ó¸é
+                else if (piece1 == 3) //ë‚˜ì´íŠ¸ë¼ë©´
                 {
                     nowmovecol = col;
                     nowmoverow = row;
@@ -249,7 +314,7 @@ public class board11 : MonoBehaviour
                         if (target != null)
                         {
                             board11 targetBoard = target.GetComponent<board11>();
-                            if (targetBoard.piece1 == 0 || targetBoard.color == 2) // target Ä­¿¡ ±â¹°ÀÌ ¾ø°Å³ª »ó´ë ±â¹°ÀÌ ÀÖÀ¸¸é
+                            if (targetBoard.piece1 == 0 || targetBoard.color == 2) // target ì¹¸ì— ê¸°ë¬¼ì´ ì—†ê±°ë‚˜ ìƒëŒ€ ê¸°ë¬¼ì´ ìˆìœ¼ë©´
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
@@ -259,7 +324,7 @@ public class board11 : MonoBehaviour
                         }
                     }
                 }
-                else if (piece1 == 5) //ÄıÀÌ¶ó¸é
+                else if (piece1 == 5) //í€¸ì´ë¼ë©´
                 {
                     nowmovecol = col;
                     nowmoverow = row;
@@ -273,7 +338,7 @@ public class board11 : MonoBehaviour
                         if (target != null)
                         {
                             board11 targetBoard = target.GetComponent<board11>();
-                            if (targetBoard.piece1 == 0 || targetBoard.color == 2) // target Ä­¿¡ ±â¹°ÀÌ ¾ø°Å³ª »ó´ë ±â¹°ÀÌ ÀÖÀ¸¸é
+                            if (targetBoard.piece1 == 0 || targetBoard.color == 2) // target ì¹¸ì— ê¸°ë¬¼ì´ ì—†ê±°ë‚˜ ìƒëŒ€ ê¸°ë¬¼ì´ ìˆìœ¼ë©´
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
@@ -284,7 +349,7 @@ public class board11 : MonoBehaviour
 
                     }
                 }
-                else if (piece1 == 6)//Å·ÀÌ¶ó¸é
+                else if (piece1 == 6)//í‚¹ì´ë¼ë©´
                 {
                     nowmovecol = col;
                     nowmoverow = row;
@@ -301,7 +366,7 @@ public class board11 : MonoBehaviour
                         {
                             board11 targetBoard = target.GetComponent<board11>();
 
-                            if (targetBoard.piece1 == 0) // target Ä­¿¡ ±â¹°ÀÌ ¾øÀ¸¸é
+                            if (targetBoard.piece1 == 0) // target ì¹¸ì— ê¸°ë¬¼ì´ ì—†ìœ¼ë©´
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
@@ -338,7 +403,7 @@ public class board11 : MonoBehaviour
                         {
                             board11 targetBoard = target.GetComponent<board11>();
 
-                            if (targetBoard.piece1 == 0) // target Ä­¿¡ ±â¹°ÀÌ ¾øÀ¸¸é
+                            if (targetBoard.piece1 == 0) // target ì¹¸ì— ê¸°ë¬¼ì´ ì—†ìœ¼ë©´
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
@@ -375,7 +440,7 @@ public class board11 : MonoBehaviour
                         {
                             board11 targetBoard = target.GetComponent<board11>();
 
-                            if (targetBoard.piece1 == 0) // target Ä­¿¡ ±â¹°ÀÌ ¾øÀ¸¸é
+                            if (targetBoard.piece1 == 0) // target ì¹¸ì— ê¸°ë¬¼ì´ ì—†ìœ¼ë©´
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
@@ -412,7 +477,7 @@ public class board11 : MonoBehaviour
                         {
                             board11 targetBoard = target.GetComponent<board11>();
 
-                            if (targetBoard.piece1 == 0) // target Ä­¿¡ ±â¹°ÀÌ ¾øÀ¸¸é
+                            if (targetBoard.piece1 == 0) // target ì¹¸ì— ê¸°ë¬¼ì´ ì—†ìœ¼ë©´
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
@@ -449,7 +514,7 @@ public class board11 : MonoBehaviour
                         {
                             board11 targetBoard = target.GetComponent<board11>();
 
-                            if (targetBoard.piece1 == 0) // target Ä­¿¡ ±â¹°ÀÌ ¾øÀ¸¸é
+                            if (targetBoard.piece1 == 0) // target ì¹¸ì— ê¸°ë¬¼ì´ ì—†ìœ¼ë©´
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
@@ -491,7 +556,7 @@ public class board11 : MonoBehaviour
                         {
                             board11 targetBoard = target.GetComponent<board11>();
 
-                            if (targetBoard.piece1 == 0) // target Ä­¿¡ ±â¹°ÀÌ ¾øÀ¸¸é
+                            if (targetBoard.piece1 == 0) // target ì¹¸ì— ê¸°ë¬¼ì´ ì—†ìœ¼ë©´
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
@@ -528,7 +593,7 @@ public class board11 : MonoBehaviour
                         {
                             board11 targetBoard = target.GetComponent<board11>();
 
-                            if (targetBoard.piece1 == 0) // target Ä­¿¡ ±â¹°ÀÌ ¾øÀ¸¸é
+                            if (targetBoard.piece1 == 0) // target ì¹¸ì— ê¸°ë¬¼ì´ ì—†ìœ¼ë©´
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
@@ -565,7 +630,7 @@ public class board11 : MonoBehaviour
                         {
                             board11 targetBoard = target.GetComponent<board11>();
 
-                            if (targetBoard.piece1 == 0) // target Ä­¿¡ ±â¹°ÀÌ ¾øÀ¸¸é
+                            if (targetBoard.piece1 == 0) // target ì¹¸ì— ê¸°ë¬¼ì´ ì—†ìœ¼ë©´
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
@@ -589,7 +654,7 @@ public class board11 : MonoBehaviour
                         }
                     }
                 }
-                else if (piece1 == 2)//ºñ¼óÀÌ¶ó¸é
+                else if (piece1 == 2)//ë¹„ìˆì´ë¼ë©´
                 {
                     nowmovecol = col;
                     nowmoverow = row;
@@ -606,7 +671,7 @@ public class board11 : MonoBehaviour
                         {
                             board11 targetBoard = target.GetComponent<board11>();
 
-                            if (targetBoard.piece1 == 0) // target Ä­¿¡ ±â¹°ÀÌ ¾øÀ¸¸é
+                            if (targetBoard.piece1 == 0) // target ì¹¸ì— ê¸°ë¬¼ì´ ì—†ìœ¼ë©´
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
@@ -643,7 +708,7 @@ public class board11 : MonoBehaviour
                         {
                             board11 targetBoard = target.GetComponent<board11>();
 
-                            if (targetBoard.piece1 == 0) // target Ä­¿¡ ±â¹°ÀÌ ¾øÀ¸¸é
+                            if (targetBoard.piece1 == 0) // target ì¹¸ì— ê¸°ë¬¼ì´ ì—†ìœ¼ë©´
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
@@ -680,7 +745,7 @@ public class board11 : MonoBehaviour
                         {
                             board11 targetBoard = target.GetComponent<board11>();
 
-                            if (targetBoard.piece1 == 0) // target Ä­¿¡ ±â¹°ÀÌ ¾øÀ¸¸é
+                            if (targetBoard.piece1 == 0) // target ì¹¸ì— ê¸°ë¬¼ì´ ì—†ìœ¼ë©´
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
@@ -717,7 +782,7 @@ public class board11 : MonoBehaviour
                         {
                             board11 targetBoard = target.GetComponent<board11>();
 
-                            if (targetBoard.piece1 == 0) // target Ä­¿¡ ±â¹°ÀÌ ¾øÀ¸¸é
+                            if (targetBoard.piece1 == 0) // target ì¹¸ì— ê¸°ë¬¼ì´ ì—†ìœ¼ë©´
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
@@ -742,7 +807,7 @@ public class board11 : MonoBehaviour
                         }
                     }
                 }
-                else if (piece1 == 4) //·èÀÏ¶§
+                else if (piece1 == 4) //ë£©ì¼ë•Œ
                 {
                     for (int i = 1; i < 10; i++)                                        //up
                     {
@@ -757,7 +822,7 @@ public class board11 : MonoBehaviour
                         {
                             board11 targetBoard = target.GetComponent<board11>();
 
-                            if (targetBoard.piece1 == 0) // target Ä­¿¡ ±â¹°ÀÌ ¾øÀ¸¸é
+                            if (targetBoard.piece1 == 0) // target ì¹¸ì— ê¸°ë¬¼ì´ ì—†ìœ¼ë©´
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
@@ -794,7 +859,7 @@ public class board11 : MonoBehaviour
                         {
                             board11 targetBoard = target.GetComponent<board11>();
 
-                            if (targetBoard.piece1 == 0) // target Ä­¿¡ ±â¹°ÀÌ ¾øÀ¸¸é
+                            if (targetBoard.piece1 == 0) // target ì¹¸ì— ê¸°ë¬¼ì´ ì—†ìœ¼ë©´
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
@@ -831,7 +896,7 @@ public class board11 : MonoBehaviour
                         {
                             board11 targetBoard = target.GetComponent<board11>();
 
-                            if (targetBoard.piece1 == 0) // target Ä­¿¡ ±â¹°ÀÌ ¾øÀ¸¸é
+                            if (targetBoard.piece1 == 0) // target ì¹¸ì— ê¸°ë¬¼ì´ ì—†ìœ¼ë©´
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
@@ -868,7 +933,7 @@ public class board11 : MonoBehaviour
                         {
                             board11 targetBoard = target.GetComponent<board11>();
 
-                            if (targetBoard.piece1 == 0) // target Ä­¿¡ ±â¹°ÀÌ ¾øÀ¸¸é
+                            if (targetBoard.piece1 == 0) // target ì¹¸ì— ê¸°ë¬¼ì´ ì—†ìœ¼ë©´
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
@@ -901,7 +966,7 @@ public class board11 : MonoBehaviour
             ResetAllCanMove();
         }
 
-        else if (canmove == 1)     //¿©±âºÎÅÍ ¿òÁ÷ÀÓ ±¸Çö, ÆùÀÇ ¿òÁ÷ÀÓ
+        else if (canmove == 1)     //ì—¬ê¸°ë¶€í„° ì›€ì§ì„ êµ¬í˜„, í°ì˜ ì›€ì§ì„
         {
             this.piece1 = 1;
             this.color = 1;
@@ -911,12 +976,12 @@ public class board11 : MonoBehaviour
             if (judge % 2 == 0)
             {
                 Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.black; // ¿ÀºêÁ§Æ® »ö»óÀ» °ËÀº»öÀ¸·Î º¯°æ
+                rend.material.color = Color.black; // ì˜¤ë¸Œì íŠ¸ ìƒ‰ìƒì„ ê²€ì€ìƒ‰ìœ¼ë¡œ ë³€ê²½
             }
             else
             {
                 Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.white; //¿ÀºêÁ§Æ® »ö»óÀ» °ËÀº»öÀ¸·Î º¯°æ
+                rend.material.color = Color.white; //ì˜¤ë¸Œì íŠ¸ ìƒ‰ìƒì„ ê²€ì€ìƒ‰ìœ¼ë¡œ ë³€ê²½
             }
             string targetName = nowmoverow.ToString() + nowmovecol.ToString();
 
@@ -932,7 +997,7 @@ public class board11 : MonoBehaviour
             nowmoverow = 0;
             ResetAllCanMove();
         }
-        else if (canmove == 3)        //³ªÀÌÆ®¸¦ ¿òÁ÷ÀÏ¶§
+        else if (canmove == 3)        //ë‚˜ì´íŠ¸ë¥¼ ì›€ì§ì¼ë•Œ
         {
             this.piece1 = 3;
             this.color = 1;
@@ -942,12 +1007,12 @@ public class board11 : MonoBehaviour
             if (judge % 2 == 0)
             {
                 Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.black; // ¿ÀºêÁ§Æ® »ö»óÀ» °ËÀº»öÀ¸·Î º¯°æ
+                rend.material.color = Color.black; // ì˜¤ë¸Œì íŠ¸ ìƒ‰ìƒì„ ê²€ì€ìƒ‰ìœ¼ë¡œ ë³€ê²½
             }
             else
             {
                 Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.white; //¿ÀºêÁ§Æ® »ö»óÀ» °ËÀº»öÀ¸·Î º¯°æ
+                rend.material.color = Color.white; //ì˜¤ë¸Œì íŠ¸ ìƒ‰ìƒì„ ê²€ì€ìƒ‰ìœ¼ë¡œ ë³€ê²½
             }
             string targetName = nowmoverow.ToString() + nowmovecol.ToString();
 
@@ -961,7 +1026,7 @@ public class board11 : MonoBehaviour
             }
             ResetAllCanMove();
         }
-        else if (canmove == 5)  //ÄıÀ» ¿òÁ÷ÀÏ‹š
+        else if (canmove == 5)  //í€¸ì„ ì›€ì§ì¼ë–„
         {
             this.piece1 = 5;
             this.color = 1;
@@ -971,12 +1036,12 @@ public class board11 : MonoBehaviour
             if (judge % 2 == 0)
             {
                 Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.black; // ¿ÀºêÁ§Æ® »ö»óÀ» °ËÀº»öÀ¸·Î º¯°æ
+                rend.material.color = Color.black; // ì˜¤ë¸Œì íŠ¸ ìƒ‰ìƒì„ ê²€ì€ìƒ‰ìœ¼ë¡œ ë³€ê²½
             }
             else
             {
                 Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.white; //¿ÀºêÁ§Æ® »ö»óÀ» °ËÀº»öÀ¸·Î º¯°æ
+                rend.material.color = Color.white; //ì˜¤ë¸Œì íŠ¸ ìƒ‰ìƒì„ ê²€ì€ìƒ‰ìœ¼ë¡œ ë³€ê²½
             }
             string targetName = nowmoverow.ToString() + nowmovecol.ToString();
 
@@ -992,7 +1057,7 @@ public class board11 : MonoBehaviour
             nowmoverow = 0;
             ResetAllCanMove();
         }
-        else if (canmove == 6)        //Å·À»¿òÁ÷ÀÏ‹š
+        else if (canmove == 6)        //í‚¹ì„ì›€ì§ì¼ë–„
         {
             this.piece1 = 6;
             this.color = 1;
@@ -1002,12 +1067,12 @@ public class board11 : MonoBehaviour
             if (judge % 2 == 0)
             {
                 Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.black; // ¿ÀºêÁ§Æ® »ö»óÀ» °ËÀº»öÀ¸·Î º¯°æ
+                rend.material.color = Color.black; // ì˜¤ë¸Œì íŠ¸ ìƒ‰ìƒì„ ê²€ì€ìƒ‰ìœ¼ë¡œ ë³€ê²½
             }
             else
             {
                 Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.white; //¿ÀºêÁ§Æ® »ö»óÀ» °ËÀº»öÀ¸·Î º¯°æ
+                rend.material.color = Color.white; //ì˜¤ë¸Œì íŠ¸ ìƒ‰ìƒì„ ê²€ì€ìƒ‰ìœ¼ë¡œ ë³€ê²½
             }
             string targetName = nowmoverow.ToString() + nowmovecol.ToString();
 
@@ -1023,7 +1088,7 @@ public class board11 : MonoBehaviour
             nowmoverow = 0;
             ResetAllCanMove();
         }
-        else if (canmove == 4)        //·èÀ»¿òÁ÷ÀÏ‹š
+        else if (canmove == 4)        //ë£©ì„ì›€ì§ì¼ë–„
         {
             this.piece1 = 4;
             this.color = 1;
@@ -1033,12 +1098,12 @@ public class board11 : MonoBehaviour
             if (judge % 2 == 0)
             {
                 Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.black; // ¿ÀºêÁ§Æ® »ö»óÀ» °ËÀº»öÀ¸·Î º¯°æ
+                rend.material.color = Color.black; // ì˜¤ë¸Œì íŠ¸ ìƒ‰ìƒì„ ê²€ì€ìƒ‰ìœ¼ë¡œ ë³€ê²½
             }
             else
             {
                 Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.white; //¿ÀºêÁ§Æ® »ö»óÀ» °ËÀº»öÀ¸·Î º¯°æ
+                rend.material.color = Color.white; //ì˜¤ë¸Œì íŠ¸ ìƒ‰ìƒì„ ê²€ì€ìƒ‰ìœ¼ë¡œ ë³€ê²½
             }
             string targetName = nowmoverow.ToString() + nowmovecol.ToString();
 
@@ -1054,7 +1119,7 @@ public class board11 : MonoBehaviour
             nowmoverow = 0;
             ResetAllCanMove();
         }
-        else if (canmove == 2)        //ºñ¼óÀ»¿òÁ÷ÀÏ‹š
+        else if (canmove == 2)        //ë¹„ìˆì„ì›€ì§ì¼ë–„
         {
             this.piece1 = 2;
             this.color = 1;
@@ -1064,12 +1129,12 @@ public class board11 : MonoBehaviour
             if (judge % 2 == 0)
             {
                 Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.black; // ¿ÀºêÁ§Æ® »ö»óÀ» °ËÀº»öÀ¸·Î º¯°æ
+                rend.material.color = Color.black; // ì˜¤ë¸Œì íŠ¸ ìƒ‰ìƒì„ ê²€ì€ìƒ‰ìœ¼ë¡œ ë³€ê²½
             }
             else
             {
                 Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.white; //¿ÀºêÁ§Æ® »ö»óÀ» °ËÀº»öÀ¸·Î º¯°æ
+                rend.material.color = Color.white; //ì˜¤ë¸Œì íŠ¸ ìƒ‰ìƒì„ ê²€ì€ìƒ‰ìœ¼ë¡œ ë³€ê²½
             }
             string targetName = nowmoverow.ToString() + nowmovecol.ToString();
 
