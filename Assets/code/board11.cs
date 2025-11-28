@@ -162,6 +162,12 @@ public class board11 : MonoBehaviour
     {
         if (color == 1 && handle == 0)
         {
+            if (ChessAIManager.currentTurn == 2)
+            {
+                Debug.Log("Its AI Turn");
+                return;
+            }
+
             if (handle == 0)
             {
                 handle += 1; // 클릭하면 handle 증가
@@ -931,6 +937,9 @@ public class board11 : MonoBehaviour
             nowmovecol = 0;
             nowmoverow = 0;
             ResetAllCanMove();
+
+            ChessAIManager.currentTurn = 2;
+            Debug.Log("AI TURN");
         }
         else if (canmove == 3)        //나이트를 움직일때
         {
@@ -960,6 +969,7 @@ public class board11 : MonoBehaviour
                 targetBoard.realhandle = 0;
             }
             ResetAllCanMove();
+            ChessAIManager.currentTurn = 2;
         }
         else if (canmove == 5)  //퀸을 움직일떄
         {
@@ -991,6 +1001,7 @@ public class board11 : MonoBehaviour
             nowmovecol = 0;
             nowmoverow = 0;
             ResetAllCanMove();
+            ChessAIManager.currentTurn = 2;
         }
         else if (canmove == 6)        //킹을움직일떄
         {
@@ -1022,6 +1033,7 @@ public class board11 : MonoBehaviour
             nowmovecol = 0;
             nowmoverow = 0;
             ResetAllCanMove();
+            ChessAIManager.currentTurn = 2;
         }
         else if (canmove == 4)        //룩을움직일떄
         {
@@ -1053,6 +1065,7 @@ public class board11 : MonoBehaviour
             nowmovecol = 0;
             nowmoverow = 0;
             ResetAllCanMove();
+            ChessAIManager.currentTurn = 2;
         }
         else if (canmove == 2)        //비숍을움직일떄
         {
@@ -1084,6 +1097,7 @@ public class board11 : MonoBehaviour
             nowmovecol = 0;
             nowmoverow = 0;
             ResetAllCanMove();
+            ChessAIManager.currentTurn = 2;
         }
     }
 }
