@@ -349,24 +349,43 @@ public class board11 : MonoBehaviour
 
                     }
                 }
-                else if (piece1 == 6)//킹이라면
+                else if (piece1 == 6) // Queen
                 {
-                    nowmovecol = col;
-                    nowmoverow = row;
-                    for (int i = 1; i < 10; i++)                                        //left up
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row + i;
-                        int targetCol = col - i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
+                    // 8 방향
+                    int[,] directions = {
+           { 1, 0 },   // up
+        { -1, 0 },  // down
+        { 0, 1 },   // right
+        { 0, -1 },  // left
+        { 1, 1 },   // right up
+        { 1, -1 },  // left up
+        { -1, 1 },  // right down
+        { -1, -1 }  // left down
+    };
 
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
+                    for (int d = 0; d < directions.GetLength(0); d++)
+                    {
+                        int dr = directions[d, 0];
+                        int dc = directions[d, 1];
+
+                        for (int i = 1; i < 10; i++)
                         {
+                            int targetRow = row + dr * i;
+                            int targetCol = col + dc * i;
+
+                            // 범위 벗어나면 정지
+                            if (targetRow < 0 || targetRow > 8 || targetCol < 0 || targetCol > 8)
+                                break;
+
+                            string targetName = targetRow.ToString() + targetCol.ToString();
+                            GameObject target = GameObject.Find(targetName);
+
+                            if (target == null)
+                                break;
+
                             board11 targetBoard = target.GetComponent<board11>();
 
-                            if (targetBoard.piece1 == 0) // target 칸에 기물이 없으면
+                            if (targetBoard.piece1 == 0) // 빈 칸
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
@@ -374,587 +393,131 @@ public class board11 : MonoBehaviour
 
                                 targetBoard.canmove = 6;
                             }
-                            else if(targetBoard.color==2)
+                            else if (targetBoard.color == 2) // 상대 기물
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
                                 rend.material.color = Color.red;
 
                                 targetBoard.canmove = 6;
-                                break;
+                                break; // 상대 기물 잡을 수 있지만 지나갈 수 없음
                             }
                             else
                             {
-                                break;
-                            }
-
-                        }
-                    }
-                    for (int i = 1; i < 10; i++)                                        //right up
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row + i;
-                        int targetCol = col + i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target 칸에 기물이 없으면
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                    for (int i = 1; i < 10; i++)                                        //left down
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row - i;
-                        int targetCol = col - i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target 칸에 기물이 없으면
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                    for (int i = 1; i < 10; i++)                                        //right down
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row - i;
-                        int targetCol = col + i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target 칸에 기물이 없으면
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                    for (int i = 1; i < 10; i++)                                        //up
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row + i;
-                        int targetCol = col;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target 칸에 기물이 없으면
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                    for (int i = 1; i < 8; i++)                                        //down
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row - i;
-                        int targetCol = nowmovecol;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (targetRow < 0 || targetRow > 7 || targetCol < 0 || targetCol > 7)
-                        {
-                            break;
-                        }
-
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target 칸에 기물이 없으면
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                    for (int i = 1; i < 10; i++)                                        //left
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row;
-                        int targetCol = col - i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target 칸에 기물이 없으면
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                    for (int i = 1; i < 10; i++)                                        //right
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row;
-                        int targetCol = col + i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target 칸에 기물이 없으면
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                                break;
-                            }
-                            else
-                            {
-                                break;
+                                break; // 내 기물 → 더 이상 못감
                             }
                         }
                     }
                 }
-                else if (piece1 == 2)//비숍이라면
+                else if (piece1 == 2) // 비숍
+                        {
+                            // 8 방향
+                            int[,] directions = {
+        { 1, 1 },   // right up
+        { 1, -1 },  // left up
+        { -1, 1 },  // right down
+        { -1, -1 }  // left down
+    };
+
+                            for (int d = 0; d < directions.GetLength(0); d++)
+                            {
+                                int dr = directions[d, 0];
+                                int dc = directions[d, 1];
+
+                                for (int i = 1; i < 10; i++)
+                                {
+                                    int targetRow = row + dr * i;
+                                    int targetCol = col + dc * i;
+
+                                    // 범위 벗어나면 정지
+                                    if (targetRow < 0 || targetRow > 8 || targetCol < 0 || targetCol > 8)
+                                        break;
+
+                                    string targetName = targetRow.ToString() + targetCol.ToString();
+                                    GameObject target = GameObject.Find(targetName);
+
+                                    if (target == null)
+                                        break;
+
+                                    board11 targetBoard = target.GetComponent<board11>();
+
+                                    if (targetBoard.piece1 == 0) // 빈 칸
+                                    {
+                                        Renderer rend = target.GetComponent<Renderer>();
+                                        rend.material = new Material(rend.material);
+                                        rend.material.color = Color.red;
+
+                                        targetBoard.canmove = 2;
+                                    }
+                                    else if (targetBoard.color == 2) // 상대 기물
+                                    {
+                                        Renderer rend = target.GetComponent<Renderer>();
+                                        rend.material = new Material(rend.material);
+                                        rend.material.color = Color.red;
+
+                                        targetBoard.canmove = 2;
+                                        break; // 상대 기물 잡을 수 있지만 지나갈 수 없음
+                                    }
+                                    else
+                                    {
+                                        break; // 내 기물 → 더 이상 못감
+                                    }
+                                }
+                            }
+                        }
+                else if (piece1 == 4) // 룩
                 {
-                    nowmovecol = col;
-                    nowmoverow = row;
-                    for (int i = 1; i < 10; i++)                                        //left up
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row + i;
-                        int targetCol = col - i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
+                    // 8 방향
+                    int[,] directions = {
+        { 1, 0 },   // up
+        { -1, 0 },  // down
+        { 0, 1 },   // right
+        { 0, -1 },  // left
+    };
 
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
+                    for (int d = 0; d < directions.GetLength(0); d++)
+                    {
+                        int dr = directions[d, 0];
+                        int dc = directions[d, 1];
+
+                        for (int i = 1; i < 10; i++)
                         {
+                            int targetRow = row + dr * i;
+                            int targetCol = col + dc * i;
+
+                            // 범위 벗어나면 정지
+                            if (targetRow < 0 || targetRow > 8 || targetCol < 0 || targetCol > 8)
+                                break;
+
+                            string targetName = targetRow.ToString() + targetCol.ToString();
+                            GameObject target = GameObject.Find(targetName);
+
+                            if (target == null)
+                                break;
+
                             board11 targetBoard = target.GetComponent<board11>();
 
-                            if (targetBoard.piece1 == 0) // target 칸에 기물이 없으면
+                            if (targetBoard.piece1 == 0) // 빈 칸
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
                                 rend.material.color = Color.red;
 
-                                targetBoard.canmove = 2;
+                                targetBoard.canmove = 4;
                             }
-                            else if (targetBoard.color == 2)
+                            else if (targetBoard.color == 2) // 상대 기물
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
                                 rend.material.color = Color.red;
 
-                                targetBoard.canmove = 2;
-                                break;
+                                targetBoard.canmove = 4;
+                                break; // 상대 기물 잡을 수 있지만 지나갈 수 없음
                             }
                             else
                             {
-                                break;
+                                break; // 내 기물 → 더 이상 못감
                             }
-
-                        }
-                    }
-                    for (int i = 1; i < 10; i++)                                        //right up
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row + i;
-                        int targetCol = col + i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target 칸에 기물이 없으면
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 2;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 2;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                    for (int i = 1; i < 10; i++)                                        //left down
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row - i;
-                        int targetCol = col - i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target 칸에 기물이 없으면
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 2;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 2;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                    for (int i = 1; i < 10; i++)                                        //right down
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row - i;
-                        int targetCol = col + i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target 칸에 기물이 없으면
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 2;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 2;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                }
-                else if (piece1 == 4) //룩일때
-                {
-                    for (int i = 1; i < 10; i++)                                        //up
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row + i;
-                        int targetCol = col;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target 칸에 기물이 없으면
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 4;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 4;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                    for (int i = 1; i <8; i++)                                        //down
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row - i;
-                        int targetCol = col;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target 칸에 기물이 없으면
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 4;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 4;
-                                break;
-                            }
-                            else if(targetBoard.color == 1)
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                    for (int i = 1; i < 10; i++)                                        //left
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row;
-                        int targetCol = col - i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target 칸에 기물이 없으면
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 4;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 4;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                    for (int i = 1; i < 10; i++)                                        //right
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row;
-                        int targetCol = col + i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target 칸에 기물이 없으면
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 4;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 4;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
                         }
                     }
                 }
