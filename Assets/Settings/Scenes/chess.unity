@@ -273,8 +273,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &72153578
 GameObject:
   m_ObjectHideFlags: 0
@@ -383,8 +381,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!61 &72153582
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -585,8 +581,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &192828486
 GameObject:
   m_ObjectHideFlags: 0
@@ -695,8 +689,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!61 &192828490
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -897,8 +889,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &266001669
 GameObject:
   m_ObjectHideFlags: 0
@@ -1057,8 +1047,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &287703764
 GameObject:
   m_ObjectHideFlags: 0
@@ -1213,8 +1201,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &352368431
 GameObject:
   m_ObjectHideFlags: 0
@@ -1369,8 +1355,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &360197865
 GameObject:
   m_ObjectHideFlags: 0
@@ -1525,8 +1509,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &388645270
 GameObject:
   m_ObjectHideFlags: 0
@@ -1681,8 +1663,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &400347775
 GameObject:
   m_ObjectHideFlags: 0
@@ -1837,8 +1817,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &403039973
 GameObject:
   m_ObjectHideFlags: 0
@@ -1993,8 +1971,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &412165837
 GameObject:
   m_ObjectHideFlags: 0
@@ -2150,8 +2126,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!61 &420735009
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2352,8 +2326,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &558530717
 GameObject:
   m_ObjectHideFlags: 0
@@ -2505,8 +2477,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!61 &562920906
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2707,8 +2677,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &602038001
 GameObject:
   m_ObjectHideFlags: 0
@@ -2817,8 +2785,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!61 &602038005
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3019,8 +2985,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &641201457
 GameObject:
   m_ObjectHideFlags: 0
@@ -3129,8 +3093,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!61 &641201461
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3331,8 +3293,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &709775978
 GameObject:
   m_ObjectHideFlags: 0
@@ -3487,8 +3447,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &780889557
 GameObject:
   m_ObjectHideFlags: 0
@@ -3643,8 +3601,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &792305455
 GameObject:
   m_ObjectHideFlags: 0
@@ -3803,8 +3759,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &878289523
 GameObject:
   m_ObjectHideFlags: 0
@@ -3959,8 +3913,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &940214667
 GameObject:
   m_ObjectHideFlags: 0
@@ -4073,8 +4025,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!61 &940214672
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4121,6 +4071,51 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!1 &979430906
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 979430908}
+  - component: {fileID: 979430907}
+  m_Layer: 0
+  m_Name: chessAI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &979430907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 979430906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9b44e36553253441a0ee42d4a3f102d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aiThinkTime: 1
+--- !u!4 &979430908
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 979430906}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &988837627
 GameObject:
   m_ObjectHideFlags: 0
@@ -4279,8 +4274,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1003911163
 GameObject:
   m_ObjectHideFlags: 0
@@ -4435,8 +4428,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1006152854
 GameObject:
   m_ObjectHideFlags: 0
@@ -4591,8 +4582,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1006200433
 GameObject:
   m_ObjectHideFlags: 0
@@ -4747,8 +4736,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1027143834
 GameObject:
   m_ObjectHideFlags: 0
@@ -4857,8 +4844,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!61 &1027143838
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5059,8 +5044,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1098079023
 GameObject:
   m_ObjectHideFlags: 0
@@ -5215,8 +5198,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1114457012
 GameObject:
   m_ObjectHideFlags: 0
@@ -5329,8 +5310,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!61 &1114457017
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5531,8 +5510,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1136643928
 GameObject:
   m_ObjectHideFlags: 0
@@ -5727,8 +5704,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!61 &1173003509
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6008,8 +5983,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1218470458
 GameObject:
   m_ObjectHideFlags: 0
@@ -6164,8 +6137,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1235959026
 GameObject:
   m_ObjectHideFlags: 0
@@ -6500,8 +6471,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1263630379
 GameObject:
   m_ObjectHideFlags: 0
@@ -6656,8 +6625,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1268364803
 GameObject:
   m_ObjectHideFlags: 0
@@ -6766,8 +6733,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!61 &1268364807
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6968,8 +6933,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1273348825
 GameObject:
   m_ObjectHideFlags: 0
@@ -7124,8 +7087,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1294281771
 GameObject:
   m_ObjectHideFlags: 0
@@ -7323,8 +7284,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1403559557
 GameObject:
   m_ObjectHideFlags: 0
@@ -7479,8 +7438,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1404753333
 GameObject:
   m_ObjectHideFlags: 0
@@ -7589,8 +7546,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!61 &1404753337
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -7791,8 +7746,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1523657412
 GameObject:
   m_ObjectHideFlags: 0
@@ -7947,8 +7900,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1653831476
 GameObject:
   m_ObjectHideFlags: 0
@@ -8057,8 +8008,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!61 &1653831480
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -8259,8 +8208,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1700883292
 GameObject:
   m_ObjectHideFlags: 0
@@ -8415,8 +8362,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1718568163
 GameObject:
   m_ObjectHideFlags: 0
@@ -8571,8 +8516,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1734801932
 GameObject:
   m_ObjectHideFlags: 0
@@ -8727,8 +8670,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1754463551
 GameObject:
   m_ObjectHideFlags: 0
@@ -8930,8 +8871,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1828321106
 GameObject:
   m_ObjectHideFlags: 0
@@ -9040,8 +8979,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!61 &1828321110
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -9242,8 +9179,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1871081069
 GameObject:
   m_ObjectHideFlags: 0
@@ -9441,8 +9376,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1900006959
 GameObject:
   m_ObjectHideFlags: 0
@@ -9597,8 +9530,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1949361537
 GameObject:
   m_ObjectHideFlags: 0
@@ -9753,8 +9684,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &1975087601
 GameObject:
   m_ObjectHideFlags: 0
@@ -9863,8 +9792,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!61 &1975087605
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -10065,8 +9992,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &2000295093
 GameObject:
   m_ObjectHideFlags: 0
@@ -10221,8 +10146,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &2015580283
 GameObject:
   m_ObjectHideFlags: 0
@@ -10377,8 +10300,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!1 &2057357732
 GameObject:
   m_ObjectHideFlags: 0
@@ -10487,8 +10408,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!61 &2057357736
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -10647,8 +10566,6 @@ MonoBehaviour:
   canmove: 0
   color: 0
   realhandle: 0
-  nowmoverow: 0
-  nowmovecol: 0
 --- !u!61 &2070039706
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -10745,3 +10662,4 @@ SceneRoots:
   - {fileID: 1250948861}
   - {fileID: 1177398762}
   - {fileID: 1754463552}
+  - {fileID: 979430908}
