@@ -16,6 +16,8 @@ public class board11 : MonoBehaviour
     public int canmove = 0; // 움직일 수 있는 칸 폰(1), 비숍(2), 나이트 (3), 룩(4), 퀸(5), 킹(6)
     public int color = 0; // 백(1), 흑(2)
     public int realhandle = 0; //현재칸 클릭 유무
+    public int firstmove = 0; //폰의 첫 이동 여부
+    static int currentTurn = 1; //현재 턴 백(1), 흑(2)
     static int nowmoverow = 0;
     static int nowmovecol = 0; //현재 움직이는 폰의 열
     void ResetAllCanMove()
@@ -40,9 +42,9 @@ public class board11 : MonoBehaviour
 
         foreach (board11 cell in allBoards)
         {
-            handle = 0;
-            realhandle = 0;
+            cell.realhandle = 0;
         }
+        handle = 0;  // static 변수는 foreach 밖에서 초기화
     }
 
     void clickboard()
@@ -65,6 +67,8 @@ public class board11 : MonoBehaviour
         {
             piece1 = 1;
             color = 1;
+            firstmove = 1;  // 이 줄 추가
+            
         }
         if (judge % 2 == 0)
         {
@@ -80,6 +84,7 @@ public class board11 : MonoBehaviour
         {
             piece1 = 1;
             color = 2;
+            firstmove = 1;
         }
         if (row == 1 && col == 2)
         {
@@ -160,7 +165,7 @@ public class board11 : MonoBehaviour
 
     private void OnMouseDown()                                  //폰 움직임 구현
     {
-        if (color == 1 && handle == 0)
+        if (color == currentTurn && handle == 0)
         {
             if (handle == 0)
             {
@@ -174,7 +179,11 @@ public class board11 : MonoBehaviour
                 {
                     nowmovecol = col;
                     nowmoverow = row;
-                    int targetRow = row + 1;
+                    int direction = (color == 1) ? 1 : -1; // 백은 위로, 흑은 아래로
+                    int enemyColor = (color == 1) ? 2 : 1;
+
+                    // 1칸 전진
+                    int targetRow = row + direction;
                     int targetCol = col;
                     string targetName = targetRow.ToString() + targetCol.ToString();
 
@@ -188,50 +197,62 @@ public class board11 : MonoBehaviour
                             Renderer rend = target.GetComponent<Renderer>();
                             rend.material = new Material(rend.material);
                             rend.material.color = Color.red;
-
                             targetBoard.canmove = 1;
-                        }
-                        else
-                        {
+
+                            // 2칸 전진 (첫 이동시)
+                            if (firstmove == 1)
+                            {
+                                int targetRow2 = row + (direction * 2);
+                                string targetName2 = targetRow2.ToString() + targetCol.ToString();
+                                GameObject target2 = GameObject.Find(targetName2);
+                                if (target2 != null)
+                                {
+                                    board11 targetBoard2 = target2.GetComponent<board11>();
+                                    if (targetBoard2.piece1 == 0)
+                                    {
+                                        Renderer rend2 = target2.GetComponent<Renderer>();
+                                        rend2.material = new Material(rend2.material);
+                                        rend2.material.color = Color.red;
+                                        targetBoard2.canmove = 1;
+                                    }
+                                }
+                            }
                         }
                     }
 
-                    int targetRow2 = row + 1;
-                    int targetCol2 = col + 1;
-                    string targetName2 = targetRow2.ToString() + targetCol2.ToString();
-
-                    GameObject target2 = GameObject.Find(targetName2);
-                    if (target2 != null)
-                    {
-                        board11 targetBoard2 = target2.GetComponent<board11>();
-                        if (targetBoard2.piece1 != 0 && targetBoard2.color == 2) // target 칸에 상대 기물이 있으면
-                        {
-                            Renderer rend = target2.GetComponent<Renderer>();
-                            rend.material = new Material(rend.material);
-                            rend.material.color = Color.red;
-                            targetBoard2.canmove = 1;
-                        }
-                        else
-                        {
-                        }
-                    }
-                    int targetRow3 = row + 1;
-                    int targetCol3 = col - 1;
+                    // 대각선 공격 (오른쪽)
+                    int targetRow3 = row + direction;
+                    int targetCol3 = col + 1;
                     string targetName3 = targetRow3.ToString() + targetCol3.ToString();
 
                     GameObject target3 = GameObject.Find(targetName3);
                     if (target3 != null)
                     {
                         board11 targetBoard3 = target3.GetComponent<board11>();
-                        if (targetBoard3.piece1 != 0 && targetBoard3.color == 2) // target 칸에 상대 기물이 있으면
+                        if (targetBoard3.piece1 != 0 && targetBoard3.color == enemyColor)
                         {
                             Renderer rend = target3.GetComponent<Renderer>();
                             rend.material = new Material(rend.material);
                             rend.material.color = Color.red;
                             targetBoard3.canmove = 1;
                         }
-                        else
+                    }
+
+                    // 대각선 공격 (왼쪽)
+                    int targetRow4 = row + direction;
+                    int targetCol4 = col - 1;
+                    string targetName4 = targetRow4.ToString() + targetCol4.ToString();
+
+                    GameObject target4 = GameObject.Find(targetName4);
+                    if (target4 != null)
+                    {
+                        board11 targetBoard4 = target4.GetComponent<board11>();
+                        if (targetBoard4.piece1 != 0 && targetBoard4.color == enemyColor)
                         {
+                            Renderer rend = target4.GetComponent<Renderer>();
+                            rend.material = new Material(rend.material);
+                            rend.material.color = Color.red;
+                            targetBoard4.canmove = 1;
                         }
                     }
                 }
@@ -240,6 +261,8 @@ public class board11 : MonoBehaviour
                     nowmovecol = col;
                     nowmoverow = row;
                     int[,] knightMoves = new int[,] { { 2, 1 }, { 2, -1 }, { -2, 1 }, { -2, -1 }, { 1, 2 }, { 1, -2 }, { -1, 2 }, { -1, -2 } };
+                    int enemyColor = (color == 1) ? 2 : 1;
+
                     for (int i = 0; i < knightMoves.GetLength(0); i++)
                     {
                         int targetRow = row + knightMoves[i, 0];
@@ -259,7 +282,7 @@ public class board11 : MonoBehaviour
                         }
                     }
                 }
-                else if (piece1 == 5) //퀸이라면
+                else if (piece1 == 6) //킹이라면
                 {
                     nowmovecol = col;
                     nowmoverow = row;
@@ -284,7 +307,7 @@ public class board11 : MonoBehaviour
 
                     }
                 }
-                else if (piece1 == 6)//킹이라면
+                else if (piece1 == 5)//퀸이라면
                 {
                     nowmovecol = col;
                     nowmoverow = row;
@@ -905,6 +928,7 @@ public class board11 : MonoBehaviour
         {
             this.piece1 = 1;
             this.color = 1;
+            this.firstmove = 0;
             this.canmove = 0;
 
             handle = 0;
@@ -931,6 +955,7 @@ public class board11 : MonoBehaviour
             nowmovecol = 0;
             nowmoverow = 0;
             ResetAllCanMove();
+            currentTurn = (currentTurn == 1) ? 2 : 1;
         }
         else if (canmove == 3)        //나이트를 움직일때
         {
@@ -960,6 +985,7 @@ public class board11 : MonoBehaviour
                 targetBoard.realhandle = 0;
             }
             ResetAllCanMove();
+            currentTurn = (currentTurn == 1) ? 2 : 1;
         }
         else if (canmove == 5)  //퀸을 움직일떄
         {
@@ -991,6 +1017,7 @@ public class board11 : MonoBehaviour
             nowmovecol = 0;
             nowmoverow = 0;
             ResetAllCanMove();
+            currentTurn = (currentTurn == 1) ? 2 : 1;
         }
         else if (canmove == 6)        //킹을움직일떄
         {
@@ -1022,6 +1049,7 @@ public class board11 : MonoBehaviour
             nowmovecol = 0;
             nowmoverow = 0;
             ResetAllCanMove();
+            currentTurn = (currentTurn == 1) ? 2 : 1;
         }
         else if (canmove == 4)        //룩을움직일떄
         {
@@ -1053,6 +1081,7 @@ public class board11 : MonoBehaviour
             nowmovecol = 0;
             nowmoverow = 0;
             ResetAllCanMove();
+            currentTurn = (currentTurn == 1) ? 2 : 1;
         }
         else if (canmove == 2)        //비숍을움직일떄
         {
@@ -1084,6 +1113,7 @@ public class board11 : MonoBehaviour
             nowmovecol = 0;
             nowmoverow = 0;
             ResetAllCanMove();
+            currentTurn = (currentTurn == 1) ? 2 : 1;
         }
     }
 }
