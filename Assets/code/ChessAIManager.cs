@@ -24,12 +24,10 @@ public class ChessAIManager : MonoBehaviour
         }
 
         typeof(board11)
-    .GetField("handle", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
-    ?.SetValue(null, 0);
-
+            .GetField("handle", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
+            ?.SetValue(null, 0);
 
         board11[] allCells = GameObject.FindObjectsByType<board11>(FindObjectsSortMode.None);
-
         List<board11> blackPieces = new List<board11>();
 
         // 1️⃣ 흑 기물만 수집
@@ -53,24 +51,24 @@ public class ChessAIManager : MonoBehaviour
         from.HandleClick(true);
 
         List<board11> movable = new List<board11>();
-
         foreach (board11 cell in allCells)
         {
             if (cell.canmove != 0)
             {
-                // ❗ 핵심: 빈 칸 or 백 기물만
-                if (cell.piece1 == 0 || cell.color == 1)
-                    movable.Add(cell);
+                movable.Add(cell);
             }
         }
 
         if (movable.Count == 0)
         {
+            Debug.Log("AI: 이동 가능한 칸 없음, 다시 시도");
             from.ResetAllCanMove();
             typeof(board11)
                 .GetField("handle", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
                 ?.SetValue(null, 0);
-            EndAITurn();
+
+            // 이동 불가능하면 다른 기물 시도
+            Invoke(nameof(AIMove), 0.1f);
             return;
         }
 
@@ -83,19 +81,26 @@ public class ChessAIManager : MonoBehaviour
 
     void ExecuteMove(board11 from, board11 to)
     {
-        // 잡기 처리
+        Debug.Log($"AI 이동: {from.row}{from.col} → {to.row}{to.col}");
+
+        // 기물 이동
         to.piece1 = from.piece1;
         to.color = from.color;
-
         from.piece1 = 0;
         from.color = 0;
 
         from.ResetAllCanMove();
+
+        // ✅ 핵심 수정: handle 초기화
+        typeof(board11)
+            .GetField("handle", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
+            ?.SetValue(null, 0);
     }
 
     void EndAITurn()
     {
-        currentTurn = 1;
+        Debug.Log("AI 턴 종료. 플레이어 턴으로 전환");
+        currentTurn = 1;  // ✅ 플레이어 턴으로 전환
         isThinking = false;
     }
 }
