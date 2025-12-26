@@ -530,6 +530,8 @@ public class board11 : MonoBehaviour
         {
             whose();
             ResetAllCanMove();
+            BoardState.CheckKingDead();
+
         }
         else if (canmove != 0)
         {
