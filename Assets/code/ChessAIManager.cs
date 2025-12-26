@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 
 public class ChessAIManager : MonoBehaviour
@@ -353,6 +353,8 @@ public class ChessAIManager : MonoBehaviour
                 to.color = from.color;
                 from.piece1 = 0;
                 from.color = 0;
+                
+
             }
             else
             {
@@ -376,6 +378,11 @@ public class ChessAIManager : MonoBehaviour
         typeof(board11)
             .GetField("handle", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
             ?.SetValue(null, 0);
+
+        BoardState.CheckKingDead();
+
+
+        
     }
 
     // 기물 간 전투 승률 계산 (공격자가 이길 확률 반환)
@@ -510,4 +517,39 @@ public class BoardState
         }
         return newState;
     }
+
+
+        public static void CheckKingDead()
+    {
+        board11[] cells = GameObject.FindObjectsByType<board11>(FindObjectsSortMode.None);
+
+        bool whiteKingAlive = false;
+        bool blackKingAlive = false;
+
+        foreach (board11 cell in cells)
+        {
+            if (cell.piece1 == 6) // 킹
+            {
+                if (cell.color == 1) whiteKingAlive = true;
+                if (cell.color == 2) blackKingAlive = true;
+            }
+        }
+
+        if (!whiteKingAlive || !blackKingAlive)
+        {
+            if (whiteKingAlive == false)
+            {
+                Debug.Log("❌ 우리 킹 죽음 → 패배");
+                GameOverUI.instance.ShowLose();
+            }
+            else if (blackKingAlive == false)
+            {
+                Debug.Log("✅ 상대 킹 죽음 → 승리");
+                GameOverUI.instance.ShowWin();
+            }
+        }
+    }
+
+
+    
 }
