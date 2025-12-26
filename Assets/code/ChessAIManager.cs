@@ -373,6 +373,21 @@ public class ChessAIManager : MonoBehaviour
             from.color = 0;
         }
 
+        if (to.piece1 == 1) // 폰이라면
+        {
+            if ((to.color == 1 && to.row == 8) || (to.color == 2 && to.row == 1))
+            {
+                // 랜덤 프로모션!
+                int[] promotionOptions = { 2, 3, 4, 5,6 }; // 비숍, 나이트, 룩, 퀸,ㅋ;ㅇ
+                int randomPromotion = promotionOptions[Random.Range(0, promotionOptions.Length)];
+
+                string[] pieceNames = { "", "폰", "비숍", "나이트", "룩", "퀸", "킹" };
+                Debug.Log($"🎉 AI 프로모션! 폰이 {pieceNames[randomPromotion]}(으)로 승급했습니다!");
+
+                to.piece1 = randomPromotion;
+            }
+        }
+
         from.ResetAllCanMove();
 
         typeof(board11)
