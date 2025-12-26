@@ -335,16 +335,119 @@ public class ChessAIManager : MonoBehaviour
     // 실제 이동 실행
     void ExecuteMove(board11 from, board11 to)
     {
-        to.piece1 = from.piece1;
-        to.color = from.color;
-        from.piece1 = 0;
-        from.color = 0;
+        // 기물을 잡는 경우 (목표 칸에 적 기물이 있음)
+        if (to.piece1 != 0 && to.color != from.color)
+        {
+            int attackerPiece = from.piece1; // 공격하는 기물 (AI)
+            int defenderPiece = to.piece1; // 방어하는 기물 (플레이어)
+
+            // 공격자가 이길 확률 계산
+            int attackerWinChance = GetBattleWinChance(attackerPiece, defenderPiece);
+
+            // 랜덤 판정
+            if (Random.Range(0, 100) < attackerWinChance)
+            {
+                Debug.Log($"AI 공격 성공! {attackerPiece}번 기물이 {defenderPiece}번 기물을 잡았습니다! ({attackerWinChance}% 확률)");
+                // 정상적으로 기물 이동
+                to.piece1 = from.piece1;
+                to.color = from.color;
+                from.piece1 = 0;
+                from.color = 0;
+            }
+            else
+            {
+                Debug.Log($"AI 역전 당함! {defenderPiece}번 기물이 {attackerPiece}번 AI 기물을 막아냈습니다! ({100 - attackerWinChance}% 확률)");
+                // 공격한 AI 기물이 죽고, 플레이어 기물은 살아남음
+                from.piece1 = 0;
+                from.color = 0;
+            }
+        }
+        else
+        {
+            // 빈 칸으로 이동
+            to.piece1 = from.piece1;
+            to.color = from.color;
+            from.piece1 = 0;
+            from.color = 0;
+        }
 
         from.ResetAllCanMove();
 
         typeof(board11)
             .GetField("handle", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
             ?.SetValue(null, 0);
+    }
+
+    // 기물 간 전투 승률 계산 (공격자가 이길 확률 반환)
+    int GetBattleWinChance(int attacker, int defender)
+    {
+        // 기물: 폰(1), 비숍(2), 나이트(3), 룩(4), 퀸(5), 킹(6)
+
+        // 같은 기물끼리는 50:50
+        if (attacker == defender)
+            return 50;
+
+        // 폰 공격
+        if (attacker == 1)
+        {
+            if (defender == 3) return 40; // 폰 vs 나이트
+            if (defender == 2) return 40; // 폰 vs 비숍
+            if (defender == 4) return 30; // 폰 vs 룩
+            if (defender == 5) return 20; // 폰 vs 퀸
+            if (defender == 6) return 10; // 폰 vs 킹
+        }
+
+        // 나이트 공격
+        if (attacker == 3)
+        {
+            if (defender == 1) return 60; // 나이트 vs 폰
+            if (defender == 2) return 50; // 나이트 vs 비숍
+            if (defender == 4) return 40; // 나이트 vs 룩
+            if (defender == 5) return 30; // 나이트 vs 퀸
+            if (defender == 6) return 20; // 나이트 vs 킹
+        }
+
+        // 비숍 공격
+        if (attacker == 2)
+        {
+            if (defender == 1) return 60; // 비숍 vs 폰
+            if (defender == 3) return 50; // 비숍 vs 나이트
+            if (defender == 4) return 40; // 비숍 vs 룩
+            if (defender == 5) return 30; // 비숍 vs 퀸
+            if (defender == 6) return 20; // 비숍 vs 킹
+        }
+
+        // 룩 공격
+        if (attacker == 4)
+        {
+            if (defender == 1) return 70; // 룩 vs 폰
+            if (defender == 3) return 60; // 룩 vs 나이트
+            if (defender == 2) return 60; // 룩 vs 비숍
+            if (defender == 5) return 40; // 룩 vs 퀸
+            if (defender == 6) return 30; // 룩 vs 킹
+        }
+
+        // 퀸 공격
+        if (attacker == 5)
+        {
+            if (defender == 1) return 80; // 퀸 vs 폰
+            if (defender == 3) return 70; // 퀸 vs 나이트
+            if (defender == 2) return 70; // 퀸 vs 비숍
+            if (defender == 4) return 60; // 퀸 vs 룩
+            if (defender == 6) return 40; // 퀸 vs 킹
+        }
+
+        // 킹 공격
+        if (attacker == 6)
+        {
+            if (defender == 1) return 90; // 킹 vs 폰
+            if (defender == 3) return 80; // 킹 vs 나이트
+            if (defender == 2) return 80; // 킹 vs 비숍
+            if (defender == 4) return 70; // 킹 vs 룩
+            if (defender == 5) return 60; // 킹 vs 퀸
+        }
+
+        return 50; // 기본값
     }
 
     void EndAITurn()
