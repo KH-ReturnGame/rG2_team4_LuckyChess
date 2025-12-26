@@ -6,7 +6,7 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Rendering.Universal.Internal;
 using static UnityEngine.Rendering.DebugUI.Table;
-using static UnityEngine.Rendering.VirtualTexturing.Debugging;
+//using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 
 public class board11 : MonoBehaviour
 {
