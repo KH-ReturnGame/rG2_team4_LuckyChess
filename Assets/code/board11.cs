@@ -546,126 +546,54 @@ public class board11 : MonoBehaviour
 
             board11 sourceBoard = sourceObject.GetComponent<board11>();
 
-            // Check if the destination is an enemy piece
-            if (this.piece1 != 0 && this.color != sourceBoard.color)
-            {
-                // Battle logic
-                int attackerPiece = sourceBoard.piece1; // Player's piece
-                int defenderPiece = this.piece1;      // AI's piece
+            this.piece1 = sourceBoard.piece1;
+            this.color = sourceBoard.color;
 
-                int attackerWinChance = GetBattleWinChance(attackerPiece, defenderPiece);
-
-                if (Random.Range(0, 100) < attackerWinChance)
-                {
-                    // Player wins
-                    Debug.Log($"플레이어 공격 성공! {attackerPiece}번 기물이 {defenderPiece}번 기물을 잡았습니다! ({attackerWinChance}% 확률)");
-                    this.piece1 = sourceBoard.piece1;
-                    this.color = sourceBoard.color;
-                    sourceBoard.piece1 = 0;
-                    sourceBoard.color = 0;
-                }
-                else
-                {
-                    // Player loses the piece
-                    Debug.Log($"플레이어 공격 실패! {defenderPiece}번 기물이 {attackerPiece}번 플레이어 기물을 막아냈습니다! ({100 - attackerWinChance}% 확률)");
-                    sourceBoard.piece1 = 0;
-                    sourceBoard.color = 0;
-                }
-            }
-            else
-            {
-                // Normal move to an empty square
-                this.piece1 = sourceBoard.piece1;
-                this.color = sourceBoard.color;
-                sourceBoard.piece1 = 0;
-                sourceBoard.color = 0;
-            }
+            sourceBoard.piece1 = 0;
+            sourceBoard.color = 0;
 
             whose();
             ResetAllCanMove();
 
+            // 폰 프로모션 체크 (폰이 끝까지 도달했을 때)
+            if (this.piece1 == 1) // 폰이라면
+            {
+                if ((this.color == 1 && this.row == 8) || (this.color == 2 && this.row == 1))
+                {
+                    // 랜덤 프로모션! (폰, 비숍, 나이트, 룩, 퀸, 킹 중 하나)
+                    int[] promotionOptions = { 1, 2, 3, 4, 5, 6 }; // 폰, 비숍, 나이트, 룩, 퀸, 킹
+                    int randomPromotion = promotionOptions[Random.Range(0, promotionOptions.Length)];
+
+                    string[] pieceNames = { "", "폰", "비숍", "나이트", "룩", "퀸", "킹" };
+                    Debug.Log($"🎉 프로모션! 폰이 {pieceNames[randomPromotion]}(으)로 승급했습니다!");
+
+                    this.piece1 = randomPromotion;
+
+                    // 즉시 비주얼 업데이트
+                    ResetAllCanMove();
+                }
+            }
+
             if (!isAI)
             {
-                // 매 턴마다 랜덤으로 결정
-                ChessAIManager.currentTurn = Random.Range(0, 2) == 0 ? 1 : 2;
+                Debug.Log("플레이어 이동 완료");
 
-                if (ChessAIManager.currentTurn == 1)
-                    Debug.Log("다음 턴: 플레이어");
+                // 룰렛 돌려서 다음 턴 결정
+                if (TurnRoulette.instance != null)
+                {
+                    TurnRoulette.instance.SpinAndDecideTurn();
+                }
                 else
-                    Debug.Log("다음 턴: AI");
+                {
+                    // 룰렛 없으면 랜덤
+                    ChessAIManager.currentTurn = Random.Range(0, 2) == 0 ? 1 : 2;
+
+                    if (ChessAIManager.currentTurn == 1)
+                        Debug.Log("다음 턴: 플레이어");
+                    else
+                        Debug.Log("다음 턴: AI");
+                }
             }
         }
-    }
-
-    // 기물 간 전투 승률 계산 (공격자가 이길 확률 반환)
-    int GetBattleWinChance(int attacker, int defender)
-    {
-        // 기물: 폰(1), 비숍(2), 나이트(3), 룩(4), 퀸(5), 킹(6)
-
-        // 같은 기물끼리는 50:50
-        if (attacker == defender)
-            return 50;
-
-        // 폰 공격
-        if (attacker == 1)
-        {
-            if (defender == 3) return 40; // 폰 vs 나이트
-            if (defender == 2) return 40; // 폰 vs 비숍
-            if (defender == 4) return 30; // 폰 vs 룩
-            if (defender == 5) return 20; // 폰 vs 퀸
-            if (defender == 6) return 10; // 폰 vs 킹
-        }
-
-        // 나이트 공격
-        if (attacker == 3)
-        {
-            if (defender == 1) return 60; // 나이트 vs 폰
-            if (defender == 2) return 50; // 나이트 vs 비숍
-            if (defender == 4) return 40; // 나이트 vs 룩
-            if (defender == 5) return 30; // 나이트 vs 퀸
-            if (defender == 6) return 20; // 나이트 vs 킹
-        }
-
-        // 비숍 공격
-        if (attacker == 2)
-        {
-            if (defender == 1) return 60; // 비숍 vs 폰
-            if (defender == 3) return 50; // 비숍 vs 나이트
-            if (defender == 4) return 40; // 비숍 vs 룩
-            if (defender == 5) return 30; // 비숍 vs 퀸
-            if (defender == 6) return 20; // 비숍 vs 킹
-        }
-
-        // 룩 공격
-        if (attacker == 4)
-        {
-            if (defender == 1) return 70; // 룩 vs 폰
-            if (defender == 3) return 60; // 룩 vs 나이트
-            if (defender == 2) return 60; // 룩 vs 비숍
-            if (defender == 5) return 40; // 룩 vs 퀸
-            if (defender == 6) return 30; // 룩 vs 킹
-        }
-
-        // 퀸 공격
-        if (attacker == 5)
-        {
-            if (defender == 1) return 80; // 퀸 vs 폰
-            if (defender == 3) return 70; // 퀸 vs 나이트
-            if (defender == 2) return 70; // 퀸 vs 비숍
-            if (defender == 4) return 60; // 퀸 vs 룩
-            if (defender == 6) return 40; // 퀸 vs 킹
-        }
-
-        // 킹 공격
-        if (attacker == 6)
-        {
-            if (defender == 1) return 90; // 킹 vs 폰
-            if (defender == 3) return 80; // 킹 vs 나이트
-            if (defender == 2) return 80; // 킹 vs 비숍
-            if (defender == 4) return 70; // 킹 vs 룩
-            if (defender == 5) return 60; // 킹 vs 퀸
-        }
-
-        return 50; // 기본값
     }
 }

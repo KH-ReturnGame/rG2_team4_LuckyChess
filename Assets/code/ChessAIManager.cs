@@ -371,6 +371,22 @@ public class ChessAIManager : MonoBehaviour
             from.color = 0;
         }
 
+        // 폰 프로모션 체크
+        if (to.piece1 == 1) // 폰이라면
+        {
+            if ((to.color == 1 && to.row == 8) || (to.color == 2 && to.row == 1))
+            {
+                // 랜덤 프로모션! (폰, 비숍, 나이트, 룩, 퀸, 킹 중 하나)
+                int[] promotionOptions = { 1, 2, 3, 4, 5, 6 }; // 폰, 비숍, 나이트, 룩, 퀸, 킹
+                int randomPromotion = promotionOptions[Random.Range(0, promotionOptions.Length)];
+
+                string[] pieceNames = { "", "폰", "비숍", "나이트", "룩", "퀸", "킹" };
+                Debug.Log($"🎉 AI 프로모션! 폰이 {pieceNames[randomPromotion]}(으)로 승급했습니다!");
+
+                to.piece1 = randomPromotion;
+            }
+        }
+
         from.ResetAllCanMove();
 
         typeof(board11)
@@ -452,15 +468,19 @@ public class ChessAIManager : MonoBehaviour
 
     void EndAITurn()
     {
-        // 매 턴마다 랜덤으로 결정
-        currentTurn = Random.Range(0, 2) == 0 ? 1 : 2;
-
-        if (currentTurn == 1)
-            Debug.Log("다음 턴: 플레이어");
-        else
-            Debug.Log("다음 턴: AI");
-
+        Debug.Log("AI 턴 종료");
         isThinking = false;
+
+        // 룰렛 돌려서 다음 턴 결정
+        if (TurnRoulette.instance != null)
+        {
+            TurnRoulette.instance.SpinAndDecideTurn();
+        }
+        else
+        {
+            // 룰렛 없으면 랜덤
+            currentTurn = Random.Range(0, 2) == 0 ? 1 : 2;
+        }
     }
 }
 
