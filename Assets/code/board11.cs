@@ -557,8 +557,13 @@ public class board11 : MonoBehaviour
 
             if (!isAI)
             {
-                ChessAIManager.currentTurn = 2;
-                Debug.Log("플레이어 이동 완료. AI 턴입니다.");
+                // 매 턴마다 랜덤으로 결정
+                ChessAIManager.currentTurn = Random.Range(0, 2) == 0 ? 1 : 2;
+
+                if (ChessAIManager.currentTurn == 1)
+                    Debug.Log("다음 턴: 플레이어");
+                else
+                    Debug.Log("다음 턴: AI");
             }
         }
     }

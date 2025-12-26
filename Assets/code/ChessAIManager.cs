@@ -3,9 +3,20 @@ using System.Collections.Generic;
 
 public class ChessAIManager : MonoBehaviour
 {
-    public static int currentTurn = 1; // 1 = 백(플레이어), 2 = 흑(AI)
+    public static int currentTurn; // 1 = 백(플레이어), 2 = 흑(AI)
     public static bool isThinking = false;
     public int searchDepth = 3; // 탐색 깊이 (3~4 추천)
+
+    void Start()
+    {
+        // 첫 턴도 랜덤
+        currentTurn = Random.Range(0, 2) == 0 ? 1 : 2;
+
+        if (currentTurn == 1)
+            Debug.Log("게임 시작! 플레이어 턴입니다.");
+        else
+            Debug.Log("게임 시작! AI 턴입니다.");
+    }
 
     // 기물 가치
     private static readonly int[] pieceValues = { 0, 100, 320, 330, 500, 900, 20000 };
