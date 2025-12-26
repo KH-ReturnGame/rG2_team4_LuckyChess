@@ -1,47 +1,73 @@
-using JetBrains.Annotations;
+Ôªøusing JetBrains.Annotations;
 using Mono.Cecil;
+using System.Net.Http.Headers;
 using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.Rendering.Universal.Internal;
 using static UnityEngine.Rendering.DebugUI.Table;
 using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 
 public class board11 : MonoBehaviour
 {
-    public int row = 0;  //∞°∑Œ
-    public int col = 0;  //ºº∑Œ
-    public int piece1 = 0; //º¯º≠¥Î∑Œ ∆˘(1),∫ÒºÛ(2),≥™¿Ã∆Æ(3),∑Ë(4),ƒ˝(5),≈∑(6)
-    static int handle = 0; //¿¸√º ƒ≠ø°º≠ º±≈√ ¿Øπ´
-    public int judge = 0; //ƒ≠¿« ªˆ º≥¡§
-    public int canmove = 0; // øÚ¡˜¿œ ºˆ ¿÷¥¬ ƒ≠ ∆˘(1), ∫ÒºÛ(2), ≥™¿Ã∆Æ (3), ∑Ë(4), ƒ˝(5), ≈∑(6)
-    public int color = 0; // πÈ(1), »Ê(2)
-    public int realhandle = 0; //«ˆ¿Áƒ≠ ≈¨∏Ø ¿Øπ´
+    public int row = 0;
+    public int col = 0;
+    public int piece1 = 0;
+    static int handle = 0;
+    public int judge = 0;
+    public int canmove = 0;
+    public int color = 0;
+    public int realhandle = 0;
     static int nowmoverow = 0;
-    static int nowmovecol = 0; //«ˆ¿Á øÚ¡˜¿Ã¥¬ ∆˘¿« ø≠
-    void ResetAllCanMove()
+    static int nowmovecol = 0;
+    public int ima = 0;
+    public GameObject pieceImage;
+
+    public void ResetAllCanMove()
     {
         board11[] allBoards = GameObject.FindObjectsByType<board11>(FindObjectsSortMode.None);
-
         foreach (board11 cell in allBoards)
         {
             cell.canmove = 0;
-
-            Renderer rend = cell.GetComponent<Renderer>(); // cell ±‚¡ÿ
-            if (cell.judge % 2 == 0)                       // cell¿« judge ªÁøÎ
-                rend.material.color = Color.black;
+            Renderer rend = cell.GetComponent<Renderer>();
+            if (cell.judge % 2 == 0)
+                rend.material.color = Color.gray;
             else
                 rend.material.color = Color.white;
         }
+
+        GameObject[] objs = GameObject.FindGameObjectsWithTag("WPACOPY");
+        foreach (GameObject obj in objs)
+        {
+            Destroy(obj);
+        }
+
+        wq("111");
+        wq("121");
+        wq("211");
+        wq("221");
+        wq("311");
+        wq("321");
+        wq("411");
+        wq("421");
+        wq("511");
+        wq("521");
+        wq("611");
+        wq("621");
     }
 
     void whose()
     {
         board11[] allBoards = GameObject.FindObjectsByType<board11>(FindObjectsSortMode.None);
-
         foreach (board11 cell in allBoards)
         {
             handle = 0;
             realhandle = 0;
+        }
+        handle = 0;
+        foreach (board11 cell in allBoards)
+        {
+            cell.realhandle = 0;
         }
     }
 
@@ -51,205 +77,264 @@ public class board11 : MonoBehaviour
         rend.material.color = Color.blue;
     }
 
+    void wq(string naame)
+    {
+        GameObject original = GameObject.Find(naame);
+        if (original == null)
+        {
+            Debug.LogError(naame + " Ïò§Î∏åÏ†ùÌä∏Î•º Ï∞æÏùÑ Ïàò ÏóÜÏäµÎãàÎã§!");
+            return;
+        }
 
+        board11[] allCells = GameObject.FindObjectsByType<board11>(FindObjectsSortMode.None);
+        foreach (board11 cell in allCells)
+        {
+            int pstring = naame[0] - '0';
+            int cstring = naame[1] - '0';
 
+            if (cell.piece1 == pstring && cell.color == cstring)
+            {
+                GameObject copy = Instantiate(original);
+                Vector3 pos = cell.transform.position;
+                pos.y += 0;
+                copy.transform.position = pos;
 
+                SpriteRenderer sr = copy.GetComponent<SpriteRenderer>();
+                if (sr != null)
+                    sr.sortingOrder = 50;
 
-    private void Start()                                        //±‚∫ª ºº∆√
+                copy.name = naame + "copy";
+                copy.tag = "WPACOPY";
+            }
+        }
+    }
+
+    private void Start()
     {
         string objName = gameObject.name;
         row = int.Parse(objName[0].ToString());
         col = int.Parse(objName[1].ToString());
         judge = row + col;
+
         if (row == 2)
         {
             piece1 = 1;
             color = 1;
         }
+
         if (judge % 2 == 0)
         {
             Renderer rend = GetComponent<Renderer>();
-            rend.material.color = Color.black; // ø¿∫Í¡ß∆Æ ªˆªÛ¿ª ∞À¿∫ªˆ¿∏∑Œ ∫Ø∞Ê
+            rend.material.color = Color.gray;
         }
         else
         {
             Renderer rend = GetComponent<Renderer>();
-            rend.material.color = Color.white; //ø¿∫Í¡ß∆Æ ªˆªÛ¿ª ∞À¿∫ªˆ¿∏∑Œ ∫Ø∞Ê
+            rend.material.color = Color.white;
         }
+
         if (row == 7)
         {
             piece1 = 1;
             color = 2;
         }
+
         if (row == 1 && col == 2)
         {
-            piece1 = 3; //≥™¿Ã∆Æ
+            piece1 = 3;
             color = 1;
         }
         if (row == 1 && col == 7)
         {
-            piece1 = 3; //≥™¿Ã∆Æ
+            piece1 = 3;
             color = 1;
         }
         if (row == 8 && col == 2)
         {
-            piece1 = 3; //≥™¿Ã∆Æ
+            piece1 = 3;
             color = 2;
         }
         if (row == 8 && col == 7)
         {
-            piece1 = 3; //≥™¿Ã∆Æ
+            piece1 = 3;
             color = 2;
         }
+
         if (row == 1 && col == 5)
         {
-            piece1 = 5; //ƒ˝
+            piece1 = 5;
             color = 1;
         }
         if (row == 8 && col == 5)
         {
-            piece1 = 5; //ƒ˝
+            piece1 = 5;
             color = 2;
         }
-        if (row == 1 && col ==4)
+
+        if (row == 1 && col == 4)
         {
-            piece1 = 6; //≈∑
+            piece1 = 6;
             color = 1;
         }
-        if(row == 8&& col == 4)
+        if (row == 8 && col == 4)
         {
-            piece1 = 6;  //≈∑
+            piece1 = 6;
             color = 2;
         }
-        if(row ==1 && col== 1 || row==1 && col ==8)
+
+        if (row == 1 && col == 1 || row == 1 && col == 8)
         {
-            piece1 = 4;  //∑Ë
+            piece1 = 4;
             color = 1;
         }
-        if(row == 8 && col == 1|| row==8 && col==8)
+        if (row == 8 && col == 1 || row == 8 && col == 8)
         {
-            piece1 = 4; // ∑Ë
+            piece1 = 4;
             color = 2;
         }
-        if(row == 1 && col == 3 || row == 1 && col == 6)
+
+        if (row == 1 && col == 3 || row == 1 && col == 6)
         {
-            piece1 = 2; //∫ÒºÛ
+            piece1 = 2;
             color = 1;
         }
         if (row == 8 && col == 3 || row == 8 && col == 6)
         {
-            piece1 = 2; //∫ÒºÛ
+            piece1 = 2;
             color = 2;
         }
 
+        if (row == 1 && col == 1)
+        {
+            Invoke(nameof(InitializePieces), 0.1f);
+        }
+    }
+
+    void InitializePieces()
+    {
+        wq("111");
+        wq("121");
+        wq("211");
+        wq("221");
+        wq("311");
+        wq("321");
+        wq("411");
+        wq("421");
+        wq("511");
+        wq("521");
+        wq("611");
+        wq("621");
     }
 
     void Update()
     {
-        // P ≈∞∏¶ ¥≠∑∂¿ª ∂ß «— π¯∏∏ ∞®¡ˆ
         if (Input.GetKeyDown(KeyCode.P))
         {
-            Debug.Log("P ≈∞ ¥≠∏≤!");
-            // ø©±‚º≠ ø¯«œ¥¬ «‘ºˆ »£√‚ ∞°¥…
+            Debug.Log("P ÌÇ§ ÎàåÎ¶º!");
             whose();
             ResetAllCanMove();
         }
     }
 
-
-
-    private void OnMouseDown()                                  //∆˘ øÚ¡˜¿” ±∏«ˆ
+    private void OnMouseDown()
     {
-        if (color == 1 && handle == 0)
+        HandleClick();
+    }
+
+    public void HandleClick(bool isAI = false)
+    {
+        if (!isAI && ChessAIManager.isThinking)
+        {
+            return;
+        }
+
+        if (handle == 0 && ((color == 1 && ChessAIManager.currentTurn == 1) || (color == 2 && ChessAIManager.currentTurn == 2)))
         {
             if (handle == 0)
             {
-                handle += 1; // ≈¨∏Ø«œ∏È handle ¡ı∞°
+                handle += 1;
                 realhandle = 1;
                 nowmovecol = col;
                 nowmoverow = row;
                 clickboard();
 
-                if (piece1 == 1) // Pawn¿Ã∂Û∏È
+                if (piece1 == 1)
                 {
                     nowmovecol = col;
                     nowmoverow = row;
-                    int targetRow = row + 1;
+                    int dir = (color == 1) ? 1 : -1;
+                    int targetRow = row + dir;
                     int targetCol = col;
                     string targetName = targetRow.ToString() + targetCol.ToString();
-
                     GameObject target = GameObject.Find(targetName);
+
                     if (target != null)
                     {
                         board11 targetBoard = target.GetComponent<board11>();
-
-                        if (targetBoard.piece1 == 0) // target ƒ≠ø° ±‚π∞¿Ã æ¯¿∏∏È
+                        if (targetBoard.piece1 == 0)
                         {
                             Renderer rend = target.GetComponent<Renderer>();
                             rend.material = new Material(rend.material);
                             rend.material.color = Color.red;
-
                             targetBoard.canmove = 1;
-                        }
-                        else
-                        {
                         }
                     }
 
-                    int targetRow2 = row + 1;
+                    int targetRow2 = row + dir;
                     int targetCol2 = col + 1;
                     string targetName2 = targetRow2.ToString() + targetCol2.ToString();
-
                     GameObject target2 = GameObject.Find(targetName2);
+
                     if (target2 != null)
                     {
                         board11 targetBoard2 = target2.GetComponent<board11>();
-                        if (targetBoard2.piece1 != 0 && targetBoard2.color == 2) // target ƒ≠ø° ªÛ¥Î ±‚π∞¿Ã ¿÷¿∏∏È
+                        if (targetBoard2.piece1 != 0 && targetBoard2.color != this.color)
                         {
                             Renderer rend = target2.GetComponent<Renderer>();
                             rend.material = new Material(rend.material);
                             rend.material.color = Color.red;
                             targetBoard2.canmove = 1;
                         }
-                        else
-                        {
-                        }
                     }
-                    int targetRow3 = row + 1;
+
+                    int targetRow3 = row + dir;
                     int targetCol3 = col - 1;
                     string targetName3 = targetRow3.ToString() + targetCol3.ToString();
-
                     GameObject target3 = GameObject.Find(targetName3);
+
                     if (target3 != null)
                     {
                         board11 targetBoard3 = target3.GetComponent<board11>();
-                        if (targetBoard3.piece1 != 0 && targetBoard3.color == 2) // target ƒ≠ø° ªÛ¥Î ±‚π∞¿Ã ¿÷¿∏∏È
+                        if (targetBoard3.piece1 != 0 && targetBoard3.color != this.color)
                         {
                             Renderer rend = target3.GetComponent<Renderer>();
                             rend.material = new Material(rend.material);
                             rend.material.color = Color.red;
                             targetBoard3.canmove = 1;
                         }
-                        else
-                        {
-                        }
                     }
                 }
-                else if (piece1 == 3) //≥™¿Ã∆Æ∂Û∏È
+                else if (piece1 == 3)
                 {
                     nowmovecol = col;
                     nowmoverow = row;
-                    int[,] knightMoves = new int[,] { { 2, 1 }, { 2, -1 }, { -2, 1 }, { -2, -1 }, { 1, 2 }, { 1, -2 }, { -1, 2 }, { -1, -2 } };
+                    int[,] knightMoves = new int[,]
+                    {
+                        { 2, 1 }, { 2, -1 }, { -2, 1 }, { -2, -1 },
+                        { 1, 2 }, { 1, -2 }, { -1, 2 }, { -1, -2 }
+                    };
+
                     for (int i = 0; i < knightMoves.GetLength(0); i++)
                     {
                         int targetRow = row + knightMoves[i, 0];
                         int targetCol = col + knightMoves[i, 1];
                         string targetName = targetRow.ToString() + targetCol.ToString();
                         GameObject target = GameObject.Find(targetName);
+
                         if (target != null)
                         {
                             board11 targetBoard = target.GetComponent<board11>();
-                            if (targetBoard.piece1 == 0 || targetBoard.color == 2) // target ƒ≠ø° ±‚π∞¿Ã æ¯∞≈≥™ ªÛ¥Î ±‚π∞¿Ã ¿÷¿∏∏È
+                            if (targetBoard.piece1 == 0 || targetBoard.color != this.color)
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
@@ -259,327 +344,129 @@ public class board11 : MonoBehaviour
                         }
                     }
                 }
-                else if (piece1 == 5) //ƒ˝¿Ã∂Û∏È
+                else if (piece1 == 5)
                 {
                     nowmovecol = col;
                     nowmoverow = row;
-                    int[,] KingMoves = new int[,] { { 1, 1 }, { 1, 0 }, { 1, -1 }, { 0, -1 }, { 0, 1 }, { -1, 1 }, { -1, -1 }, { -1, 0 } };
-                    for (int i = 0; i < KingMoves.GetLength(0); i++)
+
+                    int[,] directions = {
+                        { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 },
+                        { 1, 1 }, { 1, -1 }, { -1, 1 }, { -1, -1 }
+                    };
+
+                    for (int d = 0; d < directions.GetLength(0); d++)
                     {
-                        int targetRow = row + KingMoves[i, 0];
-                        int targetCol = col + KingMoves[i, 1];
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
+                        int dr = directions[d, 0];
+                        int dc = directions[d, 1];
+
+                        for (int i = 1; i < 10; i++)
                         {
+                            int targetRow = row + dr * i;
+                            int targetCol = col + dc * i;
+
+                            if (targetRow < 0 || targetRow > 8 || targetCol < 0 || targetCol > 8)
+                                break;
+
+                            string targetName = targetRow.ToString() + targetCol.ToString();
+                            GameObject target = GameObject.Find(targetName);
+
+                            if (target == null) break;
+
                             board11 targetBoard = target.GetComponent<board11>();
-                            if (targetBoard.piece1 == 0 || targetBoard.color == 2) // target ƒ≠ø° ±‚π∞¿Ã æ¯∞≈≥™ ªÛ¥Î ±‚π∞¿Ã ¿÷¿∏∏È
+
+                            if (targetBoard.piece1 == 0)
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
                                 rend.material.color = Color.red;
                                 targetBoard.canmove = 5;
                             }
+                            else if (targetBoard.color != this.color)
+                            {
+                                Renderer rend = target.GetComponent<Renderer>();
+                                rend.material = new Material(rend.material);
+                                rend.material.color = Color.red;
+                                targetBoard.canmove = 5;
+                                break;
+                            }
+                            else
+                            {
+                                break;
+                            }
                         }
-
                     }
                 }
-                else if (piece1 == 6)//≈∑¿Ã∂Û∏È
+                else if (piece1 == 6)
                 {
                     nowmovecol = col;
                     nowmoverow = row;
-                    for (int i = 1; i < 10; i++)                                        //left up
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row + i;
-                        int targetCol = col - i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
 
+                    int[,] KingMoves = new int[,]
+                    {
+                        { 1, 1 }, { 1, 0 }, { 1, -1 },
+                        { 0, -1 }, { 0, 1 },
+                        { -1, 1 }, { -1, -1 }, { -1, 0 }
+                    };
+
+                    for (int i = 0; i < KingMoves.GetLength(0); i++)
+                    {
+                        int targetRow = row + KingMoves[i, 0];
+                        int targetCol = col + KingMoves[i, 1];
+                        string targetName = targetRow.ToString() + targetCol.ToString();
                         GameObject target = GameObject.Find(targetName);
+
                         if (target != null)
                         {
                             board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target ƒ≠ø° ±‚π∞¿Ã æ¯¿∏∏È
+                            if (targetBoard.piece1 == 0 || targetBoard.color != this.color)
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
                                 rend.material.color = Color.red;
-
                                 targetBoard.canmove = 6;
                             }
-                            else if(targetBoard.color==2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
                         }
                     }
-                    for (int i = 1; i < 10; i++)                                        //right up
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row + i;
-                        int targetCol = col + i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
+                }
+                else if (piece1 == 2)
+                {
+                    int[,] directions = {
+                        { 1, 1 }, { 1, -1 }, { -1, 1 }, { -1, -1 }
+                    };
 
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
+                    for (int d = 0; d < directions.GetLength(0); d++)
+                    {
+                        int dr = directions[d, 0];
+                        int dc = directions[d, 1];
+
+                        for (int i = 1; i < 10; i++)
                         {
+                            int targetRow = row + dr * i;
+                            int targetCol = col + dc * i;
+
+                            if (targetRow < 0 || targetRow > 8 || targetCol < 0 || targetCol > 8)
+                                break;
+
+                            string targetName = targetRow.ToString() + targetCol.ToString();
+                            GameObject target = GameObject.Find(targetName);
+
+                            if (target == null) break;
+
                             board11 targetBoard = target.GetComponent<board11>();
 
-                            if (targetBoard.piece1 == 0) // target ƒ≠ø° ±‚π∞¿Ã æ¯¿∏∏È
+                            if (targetBoard.piece1 == 0)
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
                                 rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
+                                targetBoard.canmove = 2;
                             }
-                            else if (targetBoard.color == 2)
+                            else if (targetBoard.color != this.color)
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
                                 rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                    for (int i = 1; i < 10; i++)                                        //left down
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row - i;
-                        int targetCol = col - i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target ƒ≠ø° ±‚π∞¿Ã æ¯¿∏∏È
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                    for (int i = 1; i < 10; i++)                                        //right down
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row - i;
-                        int targetCol = col + i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target ƒ≠ø° ±‚π∞¿Ã æ¯¿∏∏È
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                    for (int i = 1; i < 10; i++)                                        //up
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row + i;
-                        int targetCol = col;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target ƒ≠ø° ±‚π∞¿Ã æ¯¿∏∏È
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                    for (int i = 1; i < 8; i++)                                        //down
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row - i;
-                        int targetCol = nowmovecol;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (targetRow < 0 || targetRow > 7 || targetCol < 0 || targetCol > 7)
-                        {
-                            break;
-                        }
-
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target ƒ≠ø° ±‚π∞¿Ã æ¯¿∏∏È
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                    for (int i = 1; i < 10; i++)                                        //left
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row;
-                        int targetCol = col - i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target ƒ≠ø° ±‚π∞¿Ã æ¯¿∏∏È
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                    for (int i = 1; i < 10; i++)                                        //right
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row;
-                        int targetCol = col + i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target ƒ≠ø° ±‚π∞¿Ã æ¯¿∏∏È
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 6;
+                                targetBoard.canmove = 2;
                                 break;
                             }
                             else
@@ -589,188 +476,44 @@ public class board11 : MonoBehaviour
                         }
                     }
                 }
-                else if (piece1 == 2)//∫ÒºÛ¿Ã∂Û∏È
+                else if (piece1 == 4)
                 {
-                    nowmovecol = col;
-                    nowmoverow = row;
-                    for (int i = 1; i < 10; i++)                                        //left up
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row + i;
-                        int targetCol = col - i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
+                    int[,] directions = {
+                        { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 }
+                    };
 
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
+                    for (int d = 0; d < directions.GetLength(0); d++)
+                    {
+                        int dr = directions[d, 0];
+                        int dc = directions[d, 1];
+
+                        for (int i = 1; i < 10; i++)
                         {
+                            int targetRow = row + dr * i;
+                            int targetCol = col + dc * i;
+
+                            if (targetRow < 0 || targetRow > 8 || targetCol < 0 || targetCol > 8)
+                                break;
+
+                            string targetName = targetRow.ToString() + targetCol.ToString();
+                            GameObject target = GameObject.Find(targetName);
+
+                            if (target == null) break;
+
                             board11 targetBoard = target.GetComponent<board11>();
 
-                            if (targetBoard.piece1 == 0) // target ƒ≠ø° ±‚π∞¿Ã æ¯¿∏∏È
+                            if (targetBoard.piece1 == 0)
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
                                 rend.material.color = Color.red;
-
-                                targetBoard.canmove = 2;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 2;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                    for (int i = 1; i < 10; i++)                                        //right up
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row + i;
-                        int targetCol = col + i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target ƒ≠ø° ±‚π∞¿Ã æ¯¿∏∏È
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 2;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 2;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                    for (int i = 1; i < 10; i++)                                        //left down
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row - i;
-                        int targetCol = col - i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target ƒ≠ø° ±‚π∞¿Ã æ¯¿∏∏È
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 2;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 2;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                    for (int i = 1; i < 10; i++)                                        //right down
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row - i;
-                        int targetCol = col + i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target ƒ≠ø° ±‚π∞¿Ã æ¯¿∏∏È
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 2;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 2;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                }
-                else if (piece1 == 4) //∑Ë¿œ∂ß
-                {
-                    for (int i = 1; i < 10; i++)                                        //up
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row + i;
-                        int targetCol = col;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target ƒ≠ø° ±‚π∞¿Ã æ¯¿∏∏È
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
                                 targetBoard.canmove = 4;
                             }
-                            else if (targetBoard.color == 2)
+                            else if (targetBoard.color != this.color)
                             {
                                 Renderer rend = target.GetComponent<Renderer>();
                                 rend.material = new Material(rend.material);
                                 rend.material.color = Color.red;
-
                                 targetBoard.canmove = 4;
                                 break;
                             }
@@ -778,312 +521,151 @@ public class board11 : MonoBehaviour
                             {
                                 break;
                             }
-
-                        }
-                    }
-                    for (int i = 1; i <8; i++)                                        //down
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row - i;
-                        int targetCol = col;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target ƒ≠ø° ±‚π∞¿Ã æ¯¿∏∏È
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 4;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 4;
-                                break;
-                            }
-                            else if(targetBoard.color == 1)
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                    for (int i = 1; i < 10; i++)                                        //left
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row;
-                        int targetCol = col - i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target ƒ≠ø° ±‚π∞¿Ã æ¯¿∏∏È
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 4;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 4;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                        }
-                    }
-                    for (int i = 1; i < 10; i++)                                        //right
-                    {
-                        nowmovecol = col;
-                        nowmoverow = row;
-                        int targetRow = row;
-                        int targetCol = col + i;
-                        string targetName = targetRow.ToString() + targetCol.ToString();
-
-                        GameObject target = GameObject.Find(targetName);
-                        if (target != null)
-                        {
-                            board11 targetBoard = target.GetComponent<board11>();
-
-                            if (targetBoard.piece1 == 0) // target ƒ≠ø° ±‚π∞¿Ã æ¯¿∏∏È
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 4;
-                            }
-                            else if (targetBoard.color == 2)
-                            {
-                                Renderer rend = target.GetComponent<Renderer>();
-                                rend.material = new Material(rend.material);
-                                rend.material.color = Color.red;
-
-                                targetBoard.canmove = 4;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
                         }
                     }
                 }
             }
         }
-        else if(realhandle == 1)
+        else if (realhandle == 1)
         {
             whose();
             ResetAllCanMove();
         }
-
-        else if (canmove == 1)     //ø©±‚∫Œ≈Õ øÚ¡˜¿” ±∏«ˆ, ∆˘¿« øÚ¡˜¿”
+        else if (canmove != 0)
         {
-            this.piece1 = 1;
-            this.color = 1;
-            this.canmove = 0;
+            string sourceName = nowmoverow.ToString() + nowmovecol.ToString();
+            GameObject sourceObject = GameObject.Find(sourceName);
 
-            handle = 0;
-            if (judge % 2 == 0)
+            if (sourceObject == null)
             {
-                Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.black; // ø¿∫Í¡ß∆Æ ªˆªÛ¿ª ∞À¿∫ªˆ¿∏∑Œ ∫Ø∞Ê
+                Debug.LogError("Ï∂úÎ∞ú Ïπ∏ÏùÑ Ï∞æÏùÑ Ïàò ÏóÜÏäµÎãàÎã§. Ïù¥ÎèôÏùÑ Ï∑®ÏÜåÌï©ÎãàÎã§.");
+                whose();
+                ResetAllCanMove();
+                return;
+            }
+
+            board11 sourceBoard = sourceObject.GetComponent<board11>();
+
+            // Check if the destination is an enemy piece
+            if (this.piece1 != 0 && this.color != sourceBoard.color)
+            {
+                // Battle logic
+                int attackerPiece = sourceBoard.piece1; // Player's piece
+                int defenderPiece = this.piece1;      // AI's piece
+
+                int attackerWinChance = GetBattleWinChance(attackerPiece, defenderPiece);
+
+                if (Random.Range(0, 100) < attackerWinChance)
+                {
+                    // Player wins
+                    Debug.Log($"ÌîåÎ†àÏù¥Ïñ¥ Í≥µÍ≤© ÏÑ±Í≥µ! {attackerPiece}Î≤à Í∏∞Î¨ºÏù¥ {defenderPiece}Î≤à Í∏∞Î¨ºÏùÑ Ïû°ÏïòÏäµÎãàÎã§! ({attackerWinChance}% ÌôïÎ•†)");
+                    this.piece1 = sourceBoard.piece1;
+                    this.color = sourceBoard.color;
+                    sourceBoard.piece1 = 0;
+                    sourceBoard.color = 0;
+                }
+                else
+                {
+                    // Player loses the piece
+                    Debug.Log($"ÌîåÎ†àÏù¥Ïñ¥ Í≥µÍ≤© Ïã§Ìå®! {defenderPiece}Î≤à Í∏∞Î¨ºÏù¥ {attackerPiece}Î≤à ÌîåÎ†àÏù¥Ïñ¥ Í∏∞Î¨ºÏùÑ ÎßâÏïÑÎÉàÏäµÎãàÎã§! ({100 - attackerWinChance}% ÌôïÎ•†)");
+                    sourceBoard.piece1 = 0;
+                    sourceBoard.color = 0;
+                }
             }
             else
             {
-                Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.white; //ø¿∫Í¡ß∆Æ ªˆªÛ¿ª ∞À¿∫ªˆ¿∏∑Œ ∫Ø∞Ê
+                // Normal move to an empty square
+                this.piece1 = sourceBoard.piece1;
+                this.color = sourceBoard.color;
+                sourceBoard.piece1 = 0;
+                sourceBoard.color = 0;
             }
-            string targetName = nowmoverow.ToString() + nowmovecol.ToString();
 
-            GameObject target = GameObject.Find(targetName);
-            if (target != null)
-            {
-                board11 targetBoard = target.GetComponent<board11>();
-                targetBoard.piece1 = 0;
-                targetBoard.color = 0;
-                targetBoard.realhandle = 0;
-            }
-            nowmovecol = 0;
-            nowmoverow = 0;
+            whose();
             ResetAllCanMove();
+
+            if (!isAI)
+            {
+                // Îß§ ÌÑ¥ÎßàÎã§ ÎûúÎç§ÏúºÎ°ú Í≤∞Ï†ï
+                ChessAIManager.currentTurn = Random.Range(0, 2) == 0 ? 1 : 2;
+
+                if (ChessAIManager.currentTurn == 1)
+                    Debug.Log("Îã§Ïùå ÌÑ¥: ÌîåÎ†àÏù¥Ïñ¥");
+                else
+                    Debug.Log("Îã§Ïùå ÌÑ¥: AI");
+            }
         }
-        else if (canmove == 3)        //≥™¿Ã∆Æ∏¶ øÚ¡˜¿œ∂ß
+    }
+
+    // Í∏∞Î¨º Í∞Ñ Ï†ÑÌà¨ ÏäπÎ•† Í≥ÑÏÇ∞ (Í≥µÍ≤©ÏûêÍ∞Ä Ïù¥Í∏∏ ÌôïÎ•† Î∞òÌôò)
+    int GetBattleWinChance(int attacker, int defender)
+    {
+        // Í∏∞Î¨º: Ìè∞(1), ÎπÑÏàç(2), ÎÇòÏù¥Ìä∏(3), Î£©(4), ÌÄ∏(5), ÌÇπ(6)
+
+        // Í∞ôÏùÄ Í∏∞Î¨ºÎÅºÎ¶¨Îäî 50:50
+        if (attacker == defender)
+            return 50;
+
+        // Ìè∞ Í≥µÍ≤©
+        if (attacker == 1)
         {
-            this.piece1 = 3;
-            this.color = 1;
-            this.canmove = 0;
-
-            handle = 0;
-            if (judge % 2 == 0)
-            {
-                Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.black; // ø¿∫Í¡ß∆Æ ªˆªÛ¿ª ∞À¿∫ªˆ¿∏∑Œ ∫Ø∞Ê
-            }
-            else
-            {
-                Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.white; //ø¿∫Í¡ß∆Æ ªˆªÛ¿ª ∞À¿∫ªˆ¿∏∑Œ ∫Ø∞Ê
-            }
-            string targetName = nowmoverow.ToString() + nowmovecol.ToString();
-
-            GameObject target = GameObject.Find(targetName);
-            if (target != null)
-            {
-                board11 targetBoard = target.GetComponent<board11>();
-                targetBoard.piece1 = 0;
-                targetBoard.color = 0;
-                targetBoard.realhandle = 0;
-            }
-            ResetAllCanMove();
+            if (defender == 3) return 40; // Ìè∞ vs ÎÇòÏù¥Ìä∏
+            if (defender == 2) return 40; // Ìè∞ vs ÎπÑÏàç
+            if (defender == 4) return 30; // Ìè∞ vs Î£©
+            if (defender == 5) return 20; // Ìè∞ vs ÌÄ∏
+            if (defender == 6) return 10; // Ìè∞ vs ÌÇπ
         }
-        else if (canmove == 5)  //ƒ˝¿ª øÚ¡˜¿œãö
+
+        // ÎÇòÏù¥Ìä∏ Í≥µÍ≤©
+        if (attacker == 3)
         {
-            this.piece1 = 5;
-            this.color = 1;
-            this.canmove = 0;
-
-            handle = 0;
-            if (judge % 2 == 0)
-            {
-                Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.black; // ø¿∫Í¡ß∆Æ ªˆªÛ¿ª ∞À¿∫ªˆ¿∏∑Œ ∫Ø∞Ê
-            }
-            else
-            {
-                Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.white; //ø¿∫Í¡ß∆Æ ªˆªÛ¿ª ∞À¿∫ªˆ¿∏∑Œ ∫Ø∞Ê
-            }
-            string targetName = nowmoverow.ToString() + nowmovecol.ToString();
-
-            GameObject target = GameObject.Find(targetName);
-            if (target != null)
-            {
-                board11 targetBoard = target.GetComponent<board11>();
-                targetBoard.piece1 = 0;
-                targetBoard.color = 0;
-                targetBoard.realhandle = 0;
-            }
-            nowmovecol = 0;
-            nowmoverow = 0;
-            ResetAllCanMove();
+            if (defender == 1) return 60; // ÎÇòÏù¥Ìä∏ vs Ìè∞
+            if (defender == 2) return 50; // ÎÇòÏù¥Ìä∏ vs ÎπÑÏàç
+            if (defender == 4) return 40; // ÎÇòÏù¥Ìä∏ vs Î£©
+            if (defender == 5) return 30; // ÎÇòÏù¥Ìä∏ vs ÌÄ∏
+            if (defender == 6) return 20; // ÎÇòÏù¥Ìä∏ vs ÌÇπ
         }
-        else if (canmove == 6)        //≈∑¿ªøÚ¡˜¿œãö
+
+        // ÎπÑÏàç Í≥µÍ≤©
+        if (attacker == 2)
         {
-            this.piece1 = 6;
-            this.color = 1;
-            this.canmove = 0;
-
-            handle = 0;
-            if (judge % 2 == 0)
-            {
-                Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.black; // ø¿∫Í¡ß∆Æ ªˆªÛ¿ª ∞À¿∫ªˆ¿∏∑Œ ∫Ø∞Ê
-            }
-            else
-            {
-                Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.white; //ø¿∫Í¡ß∆Æ ªˆªÛ¿ª ∞À¿∫ªˆ¿∏∑Œ ∫Ø∞Ê
-            }
-            string targetName = nowmoverow.ToString() + nowmovecol.ToString();
-
-            GameObject target = GameObject.Find(targetName);
-            if (target != null)
-            {
-                board11 targetBoard = target.GetComponent<board11>();
-                targetBoard.piece1 = 0;
-                targetBoard.color = 0;
-                targetBoard.realhandle = 0;
-            }
-            nowmovecol = 0;
-            nowmoverow = 0;
-            ResetAllCanMove();
+            if (defender == 1) return 60; // ÎπÑÏàç vs Ìè∞
+            if (defender == 3) return 50; // ÎπÑÏàç vs ÎÇòÏù¥Ìä∏
+            if (defender == 4) return 40; // ÎπÑÏàç vs Î£©
+            if (defender == 5) return 30; // ÎπÑÏàç vs ÌÄ∏
+            if (defender == 6) return 20; // ÎπÑÏàç vs ÌÇπ
         }
-        else if (canmove == 4)        //∑Ë¿ªøÚ¡˜¿œãö
+
+        // Î£© Í≥µÍ≤©
+        if (attacker == 4)
         {
-            this.piece1 = 4;
-            this.color = 1;
-            this.canmove = 0;
-
-            handle = 0;
-            if (judge % 2 == 0)
-            {
-                Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.black; // ø¿∫Í¡ß∆Æ ªˆªÛ¿ª ∞À¿∫ªˆ¿∏∑Œ ∫Ø∞Ê
-            }
-            else
-            {
-                Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.white; //ø¿∫Í¡ß∆Æ ªˆªÛ¿ª ∞À¿∫ªˆ¿∏∑Œ ∫Ø∞Ê
-            }
-            string targetName = nowmoverow.ToString() + nowmovecol.ToString();
-
-            GameObject target = GameObject.Find(targetName);
-            if (target != null)
-            {
-                board11 targetBoard = target.GetComponent<board11>();
-                targetBoard.piece1 = 0;
-                targetBoard.color = 0;
-                targetBoard.realhandle = 0;
-            }
-            nowmovecol = 0;
-            nowmoverow = 0;
-            ResetAllCanMove();
+            if (defender == 1) return 70; // Î£© vs Ìè∞
+            if (defender == 3) return 60; // Î£© vs ÎÇòÏù¥Ìä∏
+            if (defender == 2) return 60; // Î£© vs ÎπÑÏàç
+            if (defender == 5) return 40; // Î£© vs ÌÄ∏
+            if (defender == 6) return 30; // Î£© vs ÌÇπ
         }
-        else if (canmove == 2)        //∫ÒºÛ¿ªøÚ¡˜¿œãö
+
+        // ÌÄ∏ Í≥µÍ≤©
+        if (attacker == 5)
         {
-            this.piece1 = 2;
-            this.color = 1;
-            this.canmove = 0;
-
-            handle = 0;
-            if (judge % 2 == 0)
-            {
-                Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.black; // ø¿∫Í¡ß∆Æ ªˆªÛ¿ª ∞À¿∫ªˆ¿∏∑Œ ∫Ø∞Ê
-            }
-            else
-            {
-                Renderer rend = GetComponent<Renderer>();
-                rend.material.color = Color.white; //ø¿∫Í¡ß∆Æ ªˆªÛ¿ª ∞À¿∫ªˆ¿∏∑Œ ∫Ø∞Ê
-            }
-            string targetName = nowmoverow.ToString() + nowmovecol.ToString();
-
-            GameObject target = GameObject.Find(targetName);
-            if (target != null)
-            {
-                board11 targetBoard = target.GetComponent<board11>();
-                targetBoard.piece1 = 0;
-                targetBoard.color = 0;
-                targetBoard.realhandle = 0;
-            }
-            nowmovecol = 0;
-            nowmoverow = 0;
-            ResetAllCanMove();
+            if (defender == 1) return 80; // ÌÄ∏ vs Ìè∞
+            if (defender == 3) return 70; // ÌÄ∏ vs ÎÇòÏù¥Ìä∏
+            if (defender == 2) return 70; // ÌÄ∏ vs ÎπÑÏàç
+            if (defender == 4) return 60; // ÌÄ∏ vs Î£©
+            if (defender == 6) return 40; // ÌÄ∏ vs ÌÇπ
         }
+
+        // ÌÇπ Í≥µÍ≤©
+        if (attacker == 6)
+        {
+            if (defender == 1) return 90; // ÌÇπ vs Ìè∞
+            if (defender == 3) return 80; // ÌÇπ vs ÎÇòÏù¥Ìä∏
+            if (defender == 2) return 80; // ÌÇπ vs ÎπÑÏàç
+            if (defender == 4) return 70; // ÌÇπ vs Î£©
+            if (defender == 5) return 60; // ÌÇπ vs ÌÄ∏
+        }
+
+        return 50; // Í∏∞Î≥∏Í∞í
     }
 }

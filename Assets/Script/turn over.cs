@@ -2,42 +2,44 @@ using UnityEngine;
 
 public class turnover : MonoBehaviour
 {
+    // 다른 스크립트에서 쉽게 접근할 수 있도록 static instance (싱글톤) 생성
+    public static turnover instance;
 
-    int turn;
-    bool white_turn;
+    // 현재 턴이 백의 차례인지 여부
+    public bool isWhiteTurn;
 
-
-    void Start()
+    void Awake()
     {
-        turn = Random.Range(1, 3);
-        white_turn = true;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (turn == 1)
+        // 싱글톤 패턴 구현
+        if (instance == null)
         {
-            white_turn = true;
+            instance = this;
         }
         else
         {
-            white_turn = false;
+            Destroy(gameObject);
         }
-
-
-
-
-        if (white_turn == true)
-        {
-            Debug.Log("white");
-        }
-        else if(white_turn == false)
-        {
-            Debug.Log("Black");
-        }
-
-        Debug.Log($"{turn}");
     }
 
+    void Start()
+    {
+        // 게임 시작 시 첫 턴을 무작위로 결정
+        NextTurn();
+    }
+
+    // 다음 턴을 무작위로 결정하는 함수
+    public void NextTurn()
+    {
+        // Random.Range(0, 2)는 0 또는 1을 반환합니다.
+        isWhiteTurn = (Random.Range(0, 2) == 0);
+
+        if (isWhiteTurn)
+        {
+            Debug.Log("백의 턴");
+        }
+        else
+        {
+            Debug.Log("흑의 턴");
+        }
+    }
 }
