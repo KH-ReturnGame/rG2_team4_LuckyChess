@@ -24,6 +24,7 @@ public class ChessAIManager : MonoBehaviour
 
     void Update()
     {
+        // 랜덤 턴이므로 AI 턴이면 계속 체크
         if (currentTurn == 2 && !isThinking)
         {
             isThinking = true;
@@ -348,8 +349,14 @@ public class ChessAIManager : MonoBehaviour
 
     void EndAITurn()
     {
-        Debug.Log("AI 턴 종료. 플레이어 턴으로 전환");
-        currentTurn = 1;
+        // 매 턴마다 랜덤으로 결정
+        currentTurn = Random.Range(0, 2) == 0 ? 1 : 2;
+
+        if (currentTurn == 1)
+            Debug.Log("다음 턴: 플레이어");
+        else
+            Debug.Log("다음 턴: AI");
+
         isThinking = false;
     }
 }
