@@ -586,6 +586,24 @@ public class board11 : MonoBehaviour
             whose();
             ResetAllCanMove();
 
+            if (this.piece1 == 1) // 폰이라면
+            {
+                if ((this.color == 1 && this.row == 8) || (this.color == 2 && this.row == 1))
+                {
+                    // 랜덤 프로모션! (나이트, 비숍, 룩, 퀸 중 하나)
+                    int[] promotionOptions = { 2, 3, 4, 5, 6}; // 비숍, 나이트, 룩, 퀸, 킹
+                    int randomPromotion = promotionOptions[Random.Range(0, promotionOptions.Length)];
+
+                    string[] pieceNames = { "", "폰", "비숍", "나이트", "룩", "퀸", "킹" };
+                    Debug.Log($"🎉 프로모션! 폰이 {pieceNames[randomPromotion]}(으)로 승급했습니다!");
+
+                    this.piece1 = randomPromotion;
+
+                    // 즉시 비주얼 업데이트
+                    ResetAllCanMove();
+                }
+            }
+
             if (!isAI)
             {
                 // 매 턴마다 랜덤으로 결정

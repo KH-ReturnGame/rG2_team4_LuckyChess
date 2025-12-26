@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      chesslose_0: -2656396753343388292
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
