@@ -10333,7 +10333,7 @@ GameObject:
   - component: {fileID: 1786513249}
   - component: {fileID: 1786513248}
   m_Layer: 0
-  m_Name: TurnText
+  m_Name: TurnTexT
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
