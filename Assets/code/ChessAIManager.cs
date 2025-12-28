@@ -1,11 +1,22 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class ChessAIManager : MonoBehaviour
 {
     public static int currentTurn; // 1 = 백(플레이어), 2 = 흑(AI)
     public static bool isThinking = false;
     public int searchDepth = 3; // 탐색 깊이 (3~4 추천)
+
+    void Awake()
+    {
+        // startScene이면 이 스크립트 비활성화
+        if (SceneManager.GetActiveScene().name == "startScene")
+        {
+            this.enabled = false;
+            return;
+        }
+    }
 
     void Start()
     {
@@ -353,8 +364,6 @@ public class ChessAIManager : MonoBehaviour
                 to.color = from.color;
                 from.piece1 = 0;
                 from.color = 0;
-                
-
             }
             else
             {
@@ -378,7 +387,7 @@ public class ChessAIManager : MonoBehaviour
             if ((to.color == 1 && to.row == 8) || (to.color == 2 && to.row == 1))
             {
                 // 랜덤 프로모션!
-                int[] promotionOptions = { 2, 3, 4, 5,6 }; // 비숍, 나이트, 룩, 퀸,ㅋ;ㅇ
+                int[] promotionOptions = { 2, 3, 4, 5, 6 }; // 비숍, 나이트, 룩, 퀸, 킹
                 int randomPromotion = promotionOptions[Random.Range(0, promotionOptions.Length)];
 
                 string[] pieceNames = { "", "폰", "비숍", "나이트", "룩", "퀸", "킹" };
@@ -395,9 +404,6 @@ public class ChessAIManager : MonoBehaviour
             ?.SetValue(null, 0);
 
         BoardState.CheckKingDead();
-
-
-        
     }
 
     // 기물 간 전투 승률 계산 (공격자가 이길 확률 반환)
@@ -533,8 +539,7 @@ public class BoardState
         return newState;
     }
 
-
-        public static void CheckKingDead()
+    public static void CheckKingDead()
     {
         board11[] cells = GameObject.FindObjectsByType<board11>(FindObjectsSortMode.None);
 
@@ -564,7 +569,4 @@ public class BoardState
             }
         }
     }
-
-
-    
 }
